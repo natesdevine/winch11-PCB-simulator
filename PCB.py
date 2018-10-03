@@ -1,20 +1,6 @@
 from string import ascii_lowercase 
 import random
 
-def main():
-    processes = {}
-
-    for letter in ascii_lowercase:
-        choice = random.randint(1, 101)
-        if choice >= 50:
-            processes[letter] = True
-        else:
-            processes[letter] = False
-    
-    PCB_obj = PCB(processes)
-
-    user_process_defs = PCB_obj.getInput()
-
 class PCB(object):
 
     def __init__(self, processes):      
@@ -48,9 +34,36 @@ class PCB(object):
         if process in self.processes:
             return True
         return False
+        
+    def print_active_processes(self, user_process_list):
+        active_list, inactive_list = [], []
+        for process in user_process_list:
+            if self.processes[process]:
+                active_list.append(process)
+            else:
+                inactive_list.append(process)
             
+        print("Of the processes you inputted, the active processes are: ", active_list)
+        print("Of the processes you inputted, the inactive processes are: ", inactive_list)
+def main():
+    processes = {}
 
+    for letter in ascii_lowercase:
+        choice = random.randint(1, 101)
+        if choice >= 50:
+            processes[letter] = True
+        else:
+            processes[letter] = False
 
+    print(processes)
+            
+    PCB_obj = PCB(processes)
+    
+    PCB_obj.print_active_processes(PCB_obj.getInput())
+            
+            
+if __name__ == '__main__':
+    main()
 
         
         
