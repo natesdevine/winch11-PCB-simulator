@@ -45,6 +45,28 @@ class PCB(object):
             
         print("Of the processes you inputted, the active processes are: ", active_list)
         print("Of the processes you inputted, the inactive processes are: ", inactive_list)
+
+
+    def update(self):
+        updates = {}
+        loop_Flag = True
+        
+        while loop_Flag:
+            key = input("Please enter the processes you would like to update. When you are finished, please type \"done\": ").lower()
+            
+            if key == 'done':
+                self.processes.update(updates)
+                loop_Flag = False
+                
+            elif not self.verify(key):
+                print("The submitted process isn't possible to update.")
+
+            elif self.verify(key) and key not in updates:
+                value = input("Please enter the process' new value.\nAcceptable answers include 'True' and 'False'").lower()
+                while value != True or != False:
+                    value = input("Please enter the process' new value.\nAcceptable answers include 'True' and 'False'").lower()
+                updates[key] = value
+
 def main():
     processes = {}
 
@@ -64,11 +86,3 @@ def main():
             
 if __name__ == '__main__':
     main()
-
-        
-        
-
-
-
-        
-main()
