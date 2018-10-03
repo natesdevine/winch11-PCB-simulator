@@ -109,7 +109,7 @@ def main():
     PCB_obj = PCB(processes)
     
     PCB_obj.print_active_processes(PCB_obj.getInput())
-            
+    print('test')
             
 if __name__ == '__main__':
     main()
