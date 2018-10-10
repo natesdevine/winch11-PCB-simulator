@@ -130,7 +130,7 @@ def main():
 		PCB_obj.update()
 		print(processes)
 	elif process == 'done':
-		print("K.")
+		print("Smell ya later")
 
 
 if __name__ == '__main__':
