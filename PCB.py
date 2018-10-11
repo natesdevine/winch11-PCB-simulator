@@ -1,10 +1,55 @@
 from string import ascii_lowercase 
 import random
+import queue
 
+class Process(object):
+    
+    #make everything except ID an optional paramater
+    def __init__(self, key, active, priority, birthday, mode):
+        self.key = key
+        self.active = active
+        self.priority = priority
+        self.birthday = birthday
+        self.mode = mode
+    
+    def getKey(self):
+        return self.key
+     
+    def getPriority(self):
+        return self.priority
+         
+    def getBirthday(self):
+        return self.birthday
+        
+    def getMode(self):
+        return self.mode  
+    
+    def isActive(self):
+        return self.active == True
+    
 class PCB(object):
 
-	def __init__(self, processes):      
+	def __init__(self, processes = []):      
 		self.processes = processes
+        
+    def getKey(self, obj):
+        return obj
+        
+    def getInputFromFile(self):
+        filename = input("Please enter the filename of the file you would like to read in: ")
+        while ".txt" not in filename:
+            filename = input("Please enter the filename of the file you would like to read in: ")
+            #catch nonexistent file error here
+        processList = []
+        with open(filename) as infile:
+            for i in infile:
+                x = i.split(",")
+                #check type of x[0] through x[2], if all are not valid then throw a custom error
+                newP = Process(x[0], x[1], x[2], x[3], x[4])
+                processList.append(newP)  
+                processList.sort()
+                myQueue = Queue()
+                #create node, add to list, return list
 
 	def getInput(self):
 		loopFlag = True
