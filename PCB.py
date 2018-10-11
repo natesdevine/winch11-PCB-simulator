@@ -31,6 +31,7 @@ class PCB(object):
 
 	def __init__(self, processes = []):      
 		self.processes = processes
+<<<<<<< HEAD
         self.types = [int, bool, int, datetime, bool]
 
 
@@ -40,6 +41,11 @@ class PCB(object):
 
     def getKey(self, obj):
         return obj
+=======
+        
+    def getKey(self, elem):
+        return elem[2]
+>>>>>>> b91691eb45d5712b951b87d7c6f32ca7baae51e7
         
     def getInputFromFile(self):
         filename = input("Please enter the filename of the file you would like to read in: ")
@@ -59,8 +65,8 @@ class PCB(object):
                 newP = Process(x[0], x[1], x[2], x[3], x[4])
 
                 processList.append(newP)  
-                processList.sort()
-                myQueue = Queue()
+            processList.sort(key=getKey)
+            myQueue = Queue(m)
                 #create node, add to list, return list
 
 	def getInput(self):
