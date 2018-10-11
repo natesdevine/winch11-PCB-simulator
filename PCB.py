@@ -31,7 +31,13 @@ class PCB(object):
 
 	def __init__(self, processes = []):      
 		self.processes = processes
-        
+        self.types = [int, bool, int, datetime, bool]
+
+
+    def type_check(self, paramaters):
+    	print(self.typesgit )
+
+
     def getKey(self, obj):
         return obj
         
@@ -44,8 +50,14 @@ class PCB(object):
         with open(filename) as infile:
             for i in infile:
                 x = i.split(",")
+                
+                #throw error
+                if not self.type_check(x):
+                	pass
+
                 #check type of x[0] through x[2], if all are not valid then throw a custom error
                 newP = Process(x[0], x[1], x[2], x[3], x[4])
+
                 processList.append(newP)  
                 processList.sort()
                 myQueue = Queue()
@@ -145,18 +157,8 @@ class PCB(object):
 				print("Error. Please try again")
 
 def main():
-	processes = {}
-
-	for letter in ascii_lowercase:
-		choice = random.randint(1, 101)
-		if choice >= 50:
-			processes[letter] = True
-		else:
-			processes[letter] = False
-
-	print(str(processes) + "\n")
 	
-	PCB_obj = PCB(processes)
+	PCB_obj = PCB()
 	
 	PCB_obj.print_active_processes(PCB_obj.getInput())
 
