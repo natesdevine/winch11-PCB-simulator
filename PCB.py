@@ -1,6 +1,10 @@
 import queue
 import time
 
+
+def takesThird(elem):
+    return elem[2]
+
 class Process(object):
 	
 	#make everything except ID an optional paramater
@@ -71,9 +75,10 @@ class PCB(object):
 		while ".txt" not in filename:
 			filename = input("Please enter the filename of the file you would like to read in: ")
 			#catch nonexistent file error here
-		
+		processList = []
 		with open(filename) as infile:
 			for i in infile:
+                #stip other stuff too, not just r
 				i = i.rstrip()
 				x = i.split(",")
 				
@@ -90,9 +95,14 @@ class PCB(object):
 				newP = Process(x[0], x[1], x[2], x[3], x[4])
 
 				processList.append(newP)  
-			# processList.sort(key=getKey)
-			myQueue = Queue(m)
-				#create node, add to list, return list
+                processList.sort(key=lambda process: process.priority)
+                myQueue = queue.Queue()
+                for i in processList:
+                    myQueue.put(i)
+                #test print statements
+                print(myQueue.empty())
+                print(myQueue.qsize())
+                return myQueue
 
 	def getInput(self):
 		loopFlag = True
