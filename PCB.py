@@ -1,70 +1,98 @@
-from string import ascii_lowercase 
-import random
 import queue
+import time
 
 class Process(object):
-    
-    #make everything except ID an optional paramater
-    def __init__(self, key, active, priority, birthday, mode):
-        self.key = key
-        self.active = active
-        self.priority = priority
-        self.birthday = birthday
-        self.mode = mode
-    
-    def getKey(self):
-        return self.key
-     
-    def getPriority(self):
-        return self.priority
-         
-    def getBirthday(self):
-        return self.birthday
-        
-    def getMode(self):
-        return self.mode  
-    
-    def isActive(self):
-        return self.active == True
-    
+	
+	#make everything except ID an optional paramater
+	def __init__(self, key, active, priority, birthday, mode):
+		self.key = key
+		self.active = active
+		self.priority = priority
+		self.birthday = birthday
+		self.mode = mode
+	
+	def getKey(self):
+		return self.key
+	 
+	def getPriority(self):
+		return self.priority
+		 
+	def getBirthday(self):
+		return self.birthday
+		
+	def getMode(self):
+		return self.mode  
+	
+	def isActive(self):
+		return self.active == True
+	
 class PCB(object):
 
 	def __init__(self, processes = []):      
 		self.processes = processes
-        self.types = [int, bool, int, datetime, bool]
+
+	#========
+	def type_check(self, parameters):	
+		#check them bools ya know
+		if (len(parameters) != 5 or not self.bool_check(parameters[1]) or not self.bool_check(parameters[4])
+			or not self.int_check(parameters[0]) or not self.int_check(parameters[2])
+			or not self.time_check(parameters[3])):
+			return False
+		return True
+
+	def time_check(self, parameter):
+		if ":" not in parameter:
+			return False
+
+		hours, minutes = parameter.split(":")
+		
+		if int(hours) > 24 or int(hours) < 0:
+			return False
+
+		elif int(minutes) > 60 or int(minutes) < 0:
+			return False
+
+		return True
+
+	def bool_check(self, parameter):
+		if parameter == 'True' or parameter == 'False':
+			return True
+		return False
+
+	def int_check(self, parameter):
+		if not parameter.isdigit():
+			return False
+		return True
+	#========
+
+	def readFile(self):
+		processList = []
+		filename = input("Please enter the filename of the file you would like to read in: ")
+		while ".txt" not in filename:
+			filename = input("Please enter the filename of the file you would like to read in: ")
+			#catch nonexistent file error here
+		
+		with open(filename) as infile:
+			for i in infile:
+				i = i.rstrip()
+				x = i.split(",")
+				
+				#throw error if false
+				if self.type_check(x) == False:
+					print('Process ' + x[0] + " isn't valid. Moving on to the next process...")
+					continue
+
+				#maybe return values in correct data format
+				print('Process ' + x[0] + ' has been validated')
 
 
-    def type_check(self, paramaters):
-    	print(self.types)
+				#check type of x[0] through x[2], if all are not valid then throw a custom error
+				newP = Process(x[0], x[1], x[2], x[3], x[4])
 
-
-    def getKey(self, obj):
-        return obj
-        
-    def getKey(self, elem):
-        return elem[2]
-        
-    def getInputFromFile(self):
-        filename = input("Please enter the filename of the file you would like to read in: ")
-        while ".txt" not in filename:
-            filename = input("Please enter the filename of the file you would like to read in: ")
-            #catch nonexistent file error here
-        processList = []
-        with open(filename) as infile:
-            for i in infile:
-                x = i.split(",")
-                
-                #throw error
-                if not self.type_check(x):
-                	pass
-
-                #check type of x[0] through x[2], if all are not valid then throw a custom error
-                newP = Process(x[0], x[1], x[2], x[3], x[4])
-
-                processList.append(newP)  
-            processList.sort(key=getKey)
-            myQueue = Queue(m)
-                #create node, add to list, return list
+				processList.append(newP)  
+			# processList.sort(key=getKey)
+			myQueue = Queue(m)
+				#create node, add to list, return list
 
 	def getInput(self):
 		loopFlag = True
@@ -162,7 +190,9 @@ class PCB(object):
 def main():
 	
 	PCB_obj = PCB()
-	
+	PCB_obj.readFile()
+
+
 	PCB_obj.print_active_processes(PCB_obj.getInput())
 
 	print("\nWould you like to add a new process or update a process?")
