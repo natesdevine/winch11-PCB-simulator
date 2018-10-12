@@ -177,9 +177,9 @@ def main():
     #CB_obj.print_active_processes(PCB_obj.getInput())
 def main():
 	
-	PCB_obj = PCB()
+    PCB_obj = PCB()
 	
-	PCB_obj.print_active_processes(PCB_obj.getInput())
+    PCB_obj.print_active_processes(PCB_obj.getInput())
 
     print("\nWould you like to add a new process or update a process?")
 
