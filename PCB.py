@@ -2,9 +2,11 @@ import queue
 import time
 
 
+#method to sort list by key
 def takesThird(elem):
     return elem[2]
-    
+
+#checks to see if provided user file name is a .txt file
 def fileCheck(strFileName):
     if ".txt" not in strFileName:
         return False
@@ -12,7 +14,7 @@ def fileCheck(strFileName):
 
 class Process(object):
     
-    #make everything except ID an optional paramater
+    #instance variables for process
     def __init__(self, key, active, priority, birthday, mode):
         self.key = key
         self.active = active
@@ -20,6 +22,7 @@ class Process(object):
         self.birthday = birthday
         self.mode = mode
     
+    #standard get methods
     def getKey(self):
         return self.key
      
@@ -42,10 +45,10 @@ class PCB(object):
         self.queue = queue.Queue()
         self.readFile()
         self.getInput()
-
     #========
+    
+    #assorted methods to validate user inputted parameters processes
     def type_check(self, parameters):   
-        #check them bools ya know
         if (len(parameters) != 5 or not self.bool_check(parameters[1]) or not self.bool_check(parameters[4])
             or not self.id_check(parameters[0]) or not self.int_check(parameters[2])
             or not self.time_check(parameters[3])):
@@ -91,8 +94,8 @@ class PCB(object):
                 # print(elem.getKey(), parameter, "test")
                 return False
         return True
-    #========
 
+    #method to read in a list of processes from a .txt file (of CSV)
     def readFile(self):
         processList = []
         loopFlag = True
@@ -119,7 +122,7 @@ class PCB(object):
                         #maybe return values in correct data format
                         print('Process ID ' + x[0] + ' has been validated')
 
-                        #check type of x[0] through x[2], if all are not valid then throw a custom error
+                        #process is created for a given line of CSV here
                         newP = Process(x[0], x[1], x[2], x[3], x[4])
                         processList.append(newP)  
                         
@@ -131,6 +134,7 @@ class PCB(object):
                         self.processes.insert(0, i)  
                     print('\n --- FINISHING READING FILE ---\n')
             
+            #exception handling for nonexistent file names
             except (FileNotFoundError):
                 print("File not found. Try again")
                 filename = input("Please enter the filename of the file you would like to read in: ")
@@ -170,7 +174,8 @@ class PCB(object):
         while not self.bool_check(mode):
             mode = input("Please enter if process is User mode, \"True\" or \"False\": ")
         return mode
-
+    
+    #method to accept new processes dynamically (instead of from a file)
     def getInput(self):
         loopFlag = True
         process_list = []
@@ -214,7 +219,7 @@ class PCB(object):
             except ValueError:
                 print("Error. Please try again")
                 
-
+    #standard method to print out all active processes
     def print_active_processes(self, user_process_list):
         active_list, inactive_list = [], []
         for process in user_process_list:
@@ -226,7 +231,7 @@ class PCB(object):
         print("Of the processes you inputted, the active processes are: ", active_list)
         print("Of the processes you inputted, the inactive processes are: ", inactive_list)
 
-
+    #method to update a process of the user's choice
     def update(self):
         updates = {}
         loop_Flag = True
