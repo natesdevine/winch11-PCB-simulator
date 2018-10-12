@@ -40,7 +40,7 @@ class PCB(object):
 	def type_check(self, parameters):   
 		#check them bools ya know
 		if (len(parameters) != 5 or not self.bool_check(parameters[1]) or not self.bool_check(parameters[4])
-			or not self.int_check(parameters[0]) or not self.int_check(parameters[2])
+			or not self.id_check(parameters[0]) or not self.int_check(parameters[2])
 			or not self.time_check(parameters[3])):
 			return False
 		return True
@@ -71,11 +71,16 @@ class PCB(object):
 		return True
 
 	def id_check(self, parameter):
-		for elem in self.processes:
-			print(elem)
-			if elem.getKey() == parameter:
-				return False
+		#first check if id is an integer
+		if not self.int_check(parameter):
+			return False
 
+		for elem in self.processes:
+			if elem.getKey() == parameter:
+				print('Error: ID ' + str(parameter) + " already exists")
+				# print(elem.getKey(), parameter, "test")
+				return False
+		return True
 	#========
 
 	def readFile(self):
@@ -91,18 +96,21 @@ class PCB(object):
 				print(e)
 
 		with open(filename) as infile:
+			print("\n --- READING IN FILE ---\n")
 			for i in infile:
 				#stip other stuff too, not just r
 				i = i.rstrip()
 				x = i.split(",")
 				
+				
+
 				#throw error if false
 				if self.type_check(x) == False:
-					print('Process ID' + x[0] + " isn't valid. Moving on to the next process...")
+					print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
 					continue
 
 				#maybe return values in correct data format
-				print('Process ID' + x[0] + ' has been validated')
+				print('Process ID ' + x[0] + ' has been validated')
 
 				#check type of x[0] through x[2], if all are not valid then throw a custom error
 				newP = Process(x[0], x[1], x[2], x[3], x[4])
@@ -115,16 +123,17 @@ class PCB(object):
 					self.processes.insert(0, i)
 
 				#test print statements
-				print(self.queue.empty())
-				print(self.queue.qsize())
-   
+				# print(self.queue.empty())
+				# print(self.queue.qsize())
+		
+			print("\n --- FINISHED READING FILE -- \n")
 
 	def getProcessID(self):
 		process = input("Please enter a process ID: ")
 
-
 		#check for duplicates as well
-		while not self.int_check(process):
+		while not self.id_check(process):
+
 			process = input("Please enter a process ID: ")    	    
 
 		return process
