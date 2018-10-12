@@ -42,7 +42,7 @@ class PCB(object):
 
     def __init__(self, processes = []):      
         self.processes = processes
-        self.queue = queue.Queue()
+        self.PCBqueue = queue.Queue()
         self.readFile()
         self.getInput()
     #========
@@ -59,13 +59,16 @@ class PCB(object):
         if ":" not in parameter:
             return False
 
-        hours, minutes = parameter.split(":")
+        try:
+	        hours, minutes = parameter.split(":")
         
-        if int(hours) > 24 or int(hours) < 0:
-            return False
+	        if int(hours) > 24 or int(hours) < 0:
+	            return False
 
-        elif int(minutes) > 60 or int(minutes) < 0:
-            return False
+	        elif int(minutes) > 60 or int(minutes) < 0:
+	            return False
+        except(ValueError):
+        	return False
 
         return True
 
@@ -127,11 +130,11 @@ class PCB(object):
                         processList.append(newP)  
                         
                     loopFlag = False
-                    processList.sort(key=lambda process: int(process.priority))
+                    processList.sort(key=lambda process: int(process.priority), reverse = True)
                     
                     for i in processList:
-                        self.queue.put(i)
-                        self.processes.insert(0, i)  
+                        self.PCBqueue.put(i)
+                        self.processes.append(i)  
                     print('\n --- FINISHING READING FILE ---\n')
             
             #exception handling for nonexistent file names
@@ -174,7 +177,15 @@ class PCB(object):
         while not self.bool_check(mode):
             mode = input("Please enter if process is User mode, \"True\" or \"False\": ")
         return mode
-    
+
+    def getProcessInfo(self):
+    	ID = self.getProcessID()
+        activity = self.getActivity()
+        priority = self.getPriority()
+        time = self.getTime()
+        mode = self.getMode()
+      	return ID, activity, priority, time, mode
+
     #method to accept new processes dynamically (instead of from a file)
     def getInput(self):
         loopFlag = True
@@ -183,9 +194,9 @@ class PCB(object):
         while loopFlag:
             try:
                 #print from queue IDs instead of process list
-                print("Current process list: ")
-                for elem in self.processes:
-                	print(elem.getKey(), elem.getPriority())
+                print("Current process queue: ")
+                for elem in list(self.PCBqueue.queue):
+                	print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
 
                 ans = input("Create a process, \"True\" or \"False\":  ")
                 
@@ -193,15 +204,11 @@ class PCB(object):
                     ans = input("Create a process, \"True\" or \"False\":  ")
 
                 if ans == 'True':   
-                    ID = self.getProcessID()
-                    activity = self.getActivity()
-                    priority = self.getPriority()
-                    time = self.getTime()
-                    mode = self.getMode()
+					ID, activity, priority, time, mode = self.getProcessInfo()                	
 
                     #create, append a process to queue
                     newP = Process(ID, activity, priority, time, mode)
-                    processList.append(newP)  
+                    process_list.append(newP)  
                     
 
                 elif ans == "False":
