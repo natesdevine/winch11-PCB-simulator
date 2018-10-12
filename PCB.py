@@ -40,6 +40,8 @@ class PCB(object):
     def __init__(self, processes = []):      
         self.processes = processes
         self.queue = queue.Queue()
+        self.readFile()
+        self.getInput()
 
     #========
     def type_check(self, parameters):   
@@ -67,12 +69,15 @@ class PCB(object):
     def bool_check(self, parameter):
         if parameter == 'True' or parameter == 'False':
             return True
+        print('bool check error')
         return False
 
     def int_check(self, parameter):
         #check is digits and IF DUPlICATES
         if not parameter.isdigit():
+            print('int check error')
             return False
+
         return True
 
     def id_check(self, parameter):
@@ -95,38 +100,37 @@ class PCB(object):
         while (not fileCheck(filename)):
             print("Failed file checks")
             filename = input("Please enter the filename of the file you would like to read in: ")
+        
         while loopFlag:
             try:
-                #filename = input("Please enter the filename of the file you would like to read in: ")
+                print('\n --- READING FILE ---\n')
+
                 with open(filename) as infile:
                     for i in infile:
                         #stip other stuff too, not just r
-                        i = i.rstrip()
+                        i = i.rstrip().replace(' ', '')
                         x = i.split(",")
-            
+                      
                         #throw error if false
                         if self.type_check(x) == False:
-                            print('Process ID' + x[0] + " isn't valid. Moving on to the next process...")
+                            print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
                             continue
 
                         #maybe return values in correct data format
-                        print('Process ID' + x[0] + ' has been validated')
+                        print('Process ID ' + x[0] + ' has been validated')
 
                         #check type of x[0] through x[2], if all are not valid then throw a custom error
                         newP = Process(x[0], x[1], x[2], x[3], x[4])
-
                         processList.append(newP)  
-                        processList.sort(key=lambda process: process.priority)
-            
-                        for i in processList:
-                            self.queue.put(i)
-                            self.processes.insert(0, i)
-
-                        #test print statements
-                        print(self.queue.empty())
-                        print(self.queue.qsize())
-                    
+                        
                     loopFlag = False
+                    processList.sort(key=lambda process: int(process.priority))
+                    
+                    for i in processList:
+                        self.queue.put(i)
+                        self.processes.insert(0, i)  
+                    print('\n --- FINISHING READING FILE ---\n')
+            
             except (FileNotFoundError):
                 print("File not found. Try again")
                 filename = input("Please enter the filename of the file you would like to read in: ")
@@ -174,7 +178,9 @@ class PCB(object):
         while loopFlag:
             try:
                 #print from queue IDs instead of process list
-                print("Current process list: ", self.processes)
+                print("Current process list: ")
+                for elem in self.processes:
+                	print(elem.getKey(), elem.getPriority())
 
                 ans = input("Create a process, \"True\" or \"False\":  ")
                 
@@ -276,10 +282,6 @@ class PCB(object):
 def main():
     
     PCB_obj = PCB()
-    queue = PCB_obj.readFile()
-
-
-    PCB_obj.print_active_processes(PCB_obj.getInput())
 
     print("\nWould you like to add a new process or update a process?")
 
