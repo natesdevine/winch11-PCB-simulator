@@ -36,7 +36,7 @@ class Process(object):
         return self.mode  
     
     def isActive(self):
-        return self.active == True
+        return self.active == 'True'
     
 class PCB(object):
 
@@ -222,23 +222,32 @@ class PCB(object):
     #standard method to print out all active processes
     def print_active_processes(self, user_process_list):
         active_list, inactive_list = [], []
-        for process in user_process_list:
-            if self.processes[process]:
+        for process in self.processes:
+            if process.isActive():
                 active_list.append(process)
             else:
                 inactive_list.append(process)
-            
+                
         print("Of the processes you inputted, the active processes are: ", active_list)
         print("Of the processes you inputted, the inactive processes are: ", inactive_list)
 
     #method to update a process of the user's choice
     def update(self):
-        updates = {}
-        loop_Flag = True
-        
-        while loop_Flag:
-            key = input("Please enter the process you would like to update. When you are finished, please type \"done\": ").lower()
+        #updates = {}
+        #loop_Flag = True
+        #while loop_Flag:
+        newProcess = input("Please enter the process ID of the process you would like to update.").lower()
+        while not id_check(newProcess):
+            newProcess = input("Please enter the process ID of the process you would like to update.").lower()
             
+        print("Current process definitions: ")
+        print("Key: ", self.processes[newProcess].getKey())
+        print("Priority: ", self.processes[newProcess].getPriority())
+        print("Birthday: ", self.processes[newProcess].getBirthday())
+        print("Mode: ", self.processes[newProcess].getMode())
+        print("isActive: ", self.processes[newProcess].isActive())
+        
+     
             if key == 'done':
                 self.processes.update(updates)
                 # print(self.processes)
