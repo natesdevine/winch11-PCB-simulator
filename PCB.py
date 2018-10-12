@@ -31,17 +31,9 @@ class Process(object):
         return self.active == True
     
 class PCB(object):
-<<<<<<< HEAD
     
     def __init__(self, processes = []):      
         self.processes = processes
-=======
-
-	def __init__(self, processes = []):      
-		self.processes = processes
-<<<<<<< HEAD
-        self.types = [int, bool, int, datetime, bool]
-
 
     def type_check(self, paramaters):
     	print(self.typesgit )
@@ -49,12 +41,9 @@ class PCB(object):
 
     def getKey(self, obj):
         return obj
-=======
         
     def getKey(self, elem):
         return elem[2]
->>>>>>> b91691eb45d5712b951b87d7c6f32ca7baae51e7
->>>>>>> 1256f77a0e664344c93d920642e93597046b50f0
         
     def getInputFromFile(self):
         filename = input("Please enter the filename of the file you would like to read in: ")
@@ -148,7 +137,6 @@ class PCB(object):
                 
                 updates[key] = value
 
-<<<<<<< HEAD
         
     def add_new_process(self):
         current_processes = self.processes
@@ -187,13 +175,11 @@ def main():
     
     
     #CB_obj.print_active_processes(PCB_obj.getInput())
-=======
 def main():
 	
 	PCB_obj = PCB()
 	
 	PCB_obj.print_active_processes(PCB_obj.getInput())
->>>>>>> 1256f77a0e664344c93d920642e93597046b50f0
 
     print("\nWould you like to add a new process or update a process?")
 
