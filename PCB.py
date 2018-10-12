@@ -133,8 +133,7 @@ class PCB(object):
                     processList.sort(key=lambda process: int(process.priority), reverse = True)
                     
                     for i in processList:
-                        self.PCBqueue.put(i)
-                        self.processes.append(i)  
+                        self.merge(i)  
                     print('\n --- FINISHING READING FILE ---\n')
             
             #exception handling for nonexistent file names
@@ -186,6 +185,10 @@ class PCB(object):
         mode = self.getMode()
       	return ID, activity, priority, time, mode
 
+    def merge(self, process):
+    	self.processes.append(process)
+    	self.PCBqueue.put(process)
+
     #method to accept new processes dynamically (instead of from a file)
     def getInput(self):
         loopFlag = True
@@ -208,9 +211,9 @@ class PCB(object):
 
                     #create, append a process to queue
                     newP = Process(ID, activity, priority, time, mode)
-                    process_list.append(newP)  
+                    self.merge(newP)  
                     
-
+                #Update
                 elif ans == "False":
                     loopFlag = False
                     print("Final process list: ", process_list)
