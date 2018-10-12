@@ -4,6 +4,11 @@ import time
 
 def takesThird(elem):
 	return elem[2]
+    
+def fileCheck(strFileName):
+    if ".txt" not in strFileName:
+        return False
+    return True
 
 class Process(object):
 	
@@ -83,50 +88,48 @@ class PCB(object):
 		return True
 	#========
 
-	def readFile(self):
-		processList = []
-		filename = input("Please enter the filename of the file you would like to read in: ")
-		while ".txt" not in filename:
-			print("looping")
+    def readFile(self):
+        processList = []
+        loopFlag = True
+        filename = input("Please enter the filename of the file you would like to read in: ")
+        while (not fileCheck(filename)):
+            print("Failed file checks")
+            filename = input("Please enter the filename of the file you would like to read in: ")
+        while loopFlag:
+            try:
+                #filename = input("Please enter the filename of the file you would like to read in: ")
+                with open(filename) as infile:
+                    for i in infile:
+                        #stip other stuff too, not just r
+                        i = i.rstrip()
+                        x = i.split(",")
+            
+                        #throw error if false
+                        if self.type_check(x) == False:
+                            print('Process ID' + x[0] + " isn't valid. Moving on to the next process...")
+                            continue
 
-			try:
-				filename = input("Please enter the filename of the file you would like to read in: ")
-			except (FileNotFoundError):
-				print("hi")
-				print(e)
+                        #maybe return values in correct data format
+                        print('Process ID' + x[0] + ' has been validated')
 
-		with open(filename) as infile:
-			print("\n --- READING IN FILE ---\n")
-			for i in infile:
-				#stip other stuff too, not just r
-				i = i.rstrip()
-				x = i.split(",")
-				
-				
+                        #check type of x[0] through x[2], if all are not valid then throw a custom error
+                        newP = Process(x[0], x[1], x[2], x[3], x[4])
 
-				#throw error if false
-				if self.type_check(x) == False:
-					print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
-					continue
+                        processList.append(newP)  
+                        processList.sort(key=lambda process: process.priority)
+            
+                        for i in processList:
+                            self.queue.put(i)
+                            self.processes.insert(0, i)
 
-				#maybe return values in correct data format
-				print('Process ID ' + x[0] + ' has been validated')
-
-				#check type of x[0] through x[2], if all are not valid then throw a custom error
-				newP = Process(x[0], x[1], x[2], x[3], x[4])
-
-				processList.append(newP)  
-				processList.sort(key=lambda process: process.priority)
-				
-				for i in processList:
-					self.queue.put(i)
-					self.processes.insert(0, i)
-
-				#test print statements
-				# print(self.queue.empty())
-				# print(self.queue.qsize())
-		
-			print("\n --- FINISHED READING FILE -- \n")
+                        #test print statements
+                        print(self.queue.empty())
+                        print(self.queue.qsize())
+                    
+                    loopFlag = False
+            except (FileNotFoundError):
+                print("File not found. Try again")
+                filename = input("Please enter the filename of the file you would like to read in: ")
 
 	def getProcessID(self):
 		process = input("Please enter a process ID: ")
