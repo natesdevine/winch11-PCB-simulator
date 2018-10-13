@@ -44,7 +44,6 @@ class PCB(object):
         self.processes = processes
         self.PCBqueue = queue.Queue()
         self.readFile()
-        self.getInput()
     #========
     
     #assorted methods to validate user inputted parameters processes
@@ -60,28 +59,30 @@ class PCB(object):
             return False
 
         try:
-	        hours, minutes = parameter.split(":")
+            hours, minutes = parameter.split(":")
         
-	        if int(hours) > 24 or int(hours) < 0:
-	            return False
+            if int(hours) > 24 or int(hours) < 0:
+                print('Not acceptable hours')
+                return False
 
-	        elif int(minutes) > 60 or int(minutes) < 0:
-	            return False
+            elif int(minutes) > 60 or int(minutes) < 0:
+                print('Not acceptable minutes')
+                return False
         except(ValueError):
-        	return False
+            return False
 
         return True
 
     def bool_check(self, parameter):
         if parameter == 'True' or parameter == 'False':
             return True
-        print('bool check error')
+        print('Not an acceptable boolean')
         return False
 
     def int_check(self, parameter):
         #check is digits and IF DUPlICATES
         if not parameter.isdigit():
-            print('int check error')
+            print('Not an integer')
             return False
 
         return True
@@ -178,16 +179,31 @@ class PCB(object):
         return mode
 
     def getProcessInfo(self):
-    	ID = self.getProcessID()
+        ID = self.getProcessID()
         activity = self.getActivity()
         priority = self.getPriority()
         time = self.getTime()
         mode = self.getMode()
-      	return ID, activity, priority, time, mode
+        return ID, activity, priority, time, mode
 
     def merge(self, process):
-    	self.processes.append(process)
-    	self.PCBqueue.put(process)
+        self.processes.append(process)
+        self.processes.sort(key=lambda process: int(process.priority), reverse = True)
+
+        #SCHEDULING ALGORITHMS
+        self.PCBqueue.put(process)
+
+    def printQueue(self, *args):
+        if len(args) == 0:
+            print("\nCurrent process queue: ")
+
+        elif len(args) == 1:
+            string = str(args).replace("(", '').replace(')', '').replace(',', '').replace("'", '')
+            print("\n" + string + ' process queue: ')
+        
+        for elem in list(self.PCBqueue.queue):
+            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
+
 
     #method to accept new processes dynamically (instead of from a file)
     def getInput(self):
@@ -197,31 +213,22 @@ class PCB(object):
         while loopFlag:
             try:
                 #print from queue IDs instead of process list
-                print("Current process queue: ")
-                for elem in list(self.PCBqueue.queue):
-                	print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
+                self.printQueue()
 
-                ans = input("Create a process, \"True\" or \"False\":  ")
+                ans = input("\nCreate a process, \"True\" or \"False\":  ")
                 
                 while not self.bool_check(ans):
                     ans = input("Create a process, \"True\" or \"False\":  ")
 
                 if ans == 'True':   
-					ID, activity, priority, time, mode = self.getProcessInfo()                	
-
-                    #create, append a process to queue
+                    ID, activity, priority, time, mode = self.getProcessInfo()                  
                     newP = Process(ID, activity, priority, time, mode)
                     self.merge(newP)  
                     
                 #Update
                 elif ans == "False":
                     loopFlag = False
-                    print("Final process list: ", process_list)
-                    return process_list
-    
-                #search queue and processlist to check if process exists    
-                # elif process.getKey() not in process_list:
-                #   process_list.append(process)
+                    self.printQueue('Final')
 
                 else:
                     print("You have entered a duplicate process definition")
@@ -230,7 +237,7 @@ class PCB(object):
                 print("Error. Please try again")
                 
     #standard method to print out all active processes
-    def print_active_processes(self, user_process_list):
+    def print_active_processes(self):
         active_list, inactive_list = [], []
         for process in self.processes:
             if process.isActive():
@@ -249,15 +256,13 @@ class PCB(object):
         newProcess = input("Please enter the process ID of the process you would like to update.").lower()
         while not id_check(newProcess):
             newProcess = input("Please enter the process ID of the process you would like to update.").lower()
-            
-        print("Current process definitions: ")
-        print("Key: ", self.processes[newProcess].getKey())
-        print("Priority: ", self.processes[newProcess].getPriority())
-        print("Birthday: ", self.processes[newProcess].getBirthday())
-        print("Mode: ", self.processes[newProcess].getMode())
-        print("isActive: ", self.processes[newProcess].isActive())
-        
-     
+            print("Current process definitions: ")
+            print("Key: ", self.processes[newProcess].getKey())
+            print("Priority: ", self.processes[newProcess].getPriority())
+            print("Birthday: ", self.processes[newProcess].getBirthday())
+            print("Mode: ", self.processes[newProcess].getMode())
+            print("isActive: ", self.processes[newProcess].isActive())
+
             if key == 'done':
                 self.processes.update(updates)
                 # print(self.processes)
@@ -303,27 +308,36 @@ class PCB(object):
             except ValueError:
                 print("Error. Please try again")
 
-def main():
-    
-    PCB_obj = PCB()
+def menu():
+    process = input("\nPlease enter \"update\", \"add\", \"print\". Or enter \"done\" if you're finished with the program: ").lower()
 
-    print("\nWould you like to add a new process or update a process?")
-
-    process = input("Please enter \"update\", \"add\". Or enter \"done\" if you're finished with the program: ").lower()
-
-    while process != 'add' and process != 'update' and process != 'done':
+    while process != 'add' and process != 'update' and process != 'done' and process != 'print':
         print("Sorry, that isn't an acceptable answer.")
         process = input("Please enter \"update\", \"add\" or \"done\": ").lower()
+    return process
 
-    if process == 'add':
-        PCB_obj.add_new_process()
-        print(processes)
-    elif process == 'update':
-        PCB_obj.update()
-        print(processes)
-    elif process == 'done':
-        print("Smell ya later")
+def main():
+    loopFlag = True
+    PCB_obj = PCB()
 
+    print("\nYou can add a new process, update a process, see active processes or finish with the program")
+
+    while loopFlag:
+
+        process = menu()
+    
+        if process == 'add':
+            PCB_obj.getInput()
+
+        elif process == 'update':
+            PCB_obj.update()
+
+        elif process == 'print':
+            PCB_obj.print_active_processes()
+
+        elif process == 'done':
+            print("Smell ya later")
+            loopFlag = False
 
 if __name__ == '__main__':
     main()
