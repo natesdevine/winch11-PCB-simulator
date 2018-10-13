@@ -1,15 +1,5 @@
 import queue
 
-#method to sort list by key
-def takesThird(elem):
-    return elem[2]
-
-#checks to see if provided user file name is a .txt file
-def fileCheck(strFileName):
-    if ".txt" not in strFileName:
-        return False
-    return True
-
 class Process(object):
     
     #instance variables for process
@@ -110,51 +100,7 @@ class PCB(object):
                 return False
         return True
 
-    #method to read in a list of processes from a .txt file (of CSV)
-    def readFile(self):
-        processList = []
-        loopFlag = True
-        filename = input("Please enter the filename of the file you would like to read in: ")
-        while (not fileCheck(filename)):
-            print("Invalid file name.")
-            filename = input("Please enter the filename of the file you would like to read in: ")
-        
-        while loopFlag:
-            try:
-                print('\n --- READING FILE ---\n')
-
-                with open(filename) as infile:
-                    for i in infile:
-                        #stip other stuff too, not just r
-                        i = i.rstrip().replace(' ', '')
-                        x = i.split(",")
-                      
-                        #throw error if false
-                        if self.type_check(x) == False:
-                            print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
-                            continue
-
-                        #maybe return values in correct data format
-                        print('Process ID ' + x[0] + ' has been validated')
-
-                        #process is created for a given line of CSV here
-                        newP = Process(x[0], x[1], x[2], x[3], x[4])
-                        processList.append(newP)  
-                        
-                    loopFlag = False
-                    processList.sort(key=lambda process: int(process.priority), reverse = True)
-                    
-                    for i in processList:
-                        self.merge(i)  
-                    print('\n --- FINISHING READING FILE ---\n')
-            
-            #exception handling for nonexistent file names
-            except (FileNotFoundError):
-                print("File not found. Try again")
-                filename = input("Please enter the filename of the file you would like to read in: ")
-
-
-    #Functions used for getting process' info from User
+        #Functions used for getting process' info from User
     def getProcessInfo(self):
         ID = self.getProcessID()
         activity = self.getActivity()
@@ -199,16 +145,7 @@ class PCB(object):
             mode = input("Please enter if process is User mode, \"True\" or \"False\": ")
         return mode
 
-
-    #Updates the queue with new processes from user
-    def merge(self, process):
-        self.processes.append(process)
-        self.processes.sort(key=lambda process: int(process.priority), reverse = True)
-
-        #SCHEDULING ALGORITHMS
-        self.PCBqueue.put(process)
-
-    #Prints the processes, active and inactive, in the queue
+        #Prints the processes, active and inactive, in the queue
     def printQueue(self, *args):
         if len(args) == 0:
             print("\nCurrent process queue: ")
@@ -231,22 +168,73 @@ class PCB(object):
                 
         print("Of the processes you inputted, the active processes are: ", active_list)
         print("Of the processes you inputted, the inactive processes are: ", inactive_list)
-         
-    def updateProcessInfo(self):
-        print("You will now be prompted to enter new process definitions for the selected process")
-        newList = []
+       
+    def print_process_info(self, someProcess):
+        print("Current process definitions: ")
+        print("Key: ", someProcess.getKey())
+        print("Priority: ", someProcess.getPriority())
+        print("Birthday: ", someProcess.getBirthday())
+        print("Mode: ", someProcess.getMode())
+        print("isActive: ", someProcess.isActive())
+       
+
+    #searches for a process by ID, returns false if it does not exist
+    def searchProcesses(self, processID):
+        for process in self.processes:
+            if process.getKey() == processID:
+                return process
+        return False
+
+    #Updates the queue with new processes from user
+    def merge(self, process):
+        self.processes.append(process)
+        self.processes.sort(key=lambda process: int(process.priority), reverse = True)
+
+        #SCHEDULING ALGORITHMS
+        self.PCBqueue.put(process)
+
+    #method to read in a list of processes from a .txt file (of CSV)
+    def readFile(self):
+        processList = []
+        loopFlag = True
+        filename = input("Please enter the filename of the file you would like to read in: ")
+        while (not fileCheck(filename)):
+            print("Invalid file name.")
+            filename = input("Please enter the filename of the file you would like to read in: ")
         
-        activity = self.getActivity()
-        priority = self.getPriority()
-        time = self.getTime()
-        mode = self.getMode()
-        
-        newList.append(priority)
-        newList.append(time)
-        newList.append(mode)
-        newList.append(activity)
-        
-        return newList
+        while loopFlag:
+            try:
+                print('\n --- READING FILE ---\n')
+
+                with open(filename) as infile:
+                    for i in infile:
+                        #stip other stuff too, not just r
+                        i = i.rstrip().replace(' ', '')
+                        x = i.split(",")
+                      
+                        #throw error if false
+                        if self.type_check(x) == False:
+                            print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
+                            continue
+
+                        #maybe return values in correct data format
+                        print('Process ID ' + x[0] + ' has been validated')
+
+                        #process is created for a given line of CSV here
+                        newP = Process(x[0], x[1], x[2], x[3], x[4])
+                        processList.append(newP)  
+                        
+                    loopFlag = False
+                    processList.sort(key=lambda process: int(process.priority), reverse = True)
+                    
+                    for i in processList:
+                        self.merge(i)  
+                    print('\n --- FINISHING READING FILE ---\n')
+            
+            #exception handling for nonexistent file names
+            except (FileNotFoundError):
+                print("File not found. Try again")
+                filename = input("Please enter the filename of the file you would like to read in: ")
 
     #method to accept new processes dynamically (instead of from a file)
     def add(self):
@@ -277,21 +265,22 @@ class PCB(object):
             except ValueError:
                 print("Error. Please try again")
 
-    def print_process_info(self, someProcess):
-        print("Current process definitions: ")
-        print("Key: ", someProcess.getKey())
-        print("Priority: ", someProcess.getPriority())
-        print("Birthday: ", someProcess.getBirthday())
-        print("Mode: ", someProcess.getMode())
-        print("isActive: ", someProcess.isActive())
-                
-    
-    #searches for a process by ID, returns false if it does not exist
-    def searchProcesses(self, processID):
-        for process in self.processes:
-            if process.getKey() == processID:
-                return process
-        return False
+           
+    def updateProcessInfo(self):
+        print("You will now be prompted to enter new process definitions for the selected process")
+        newList = []
+        
+        activity = self.getActivity()
+        priority = self.getPriority()
+        time = self.getTime()
+        mode = self.getMode()
+        
+        newList.append(priority)
+        newList.append(time)
+        newList.append(mode)
+        newList.append(activity)
+        
+        return newList
 
     #method to update a process of the user's choice
     def update(self):
@@ -313,8 +302,14 @@ class PCB(object):
         self.processes[existingProcessIndex].setActive(newProcessValues[3])
         
         self.print_process_info(existingProcess)
-        
+ 
+#checks to see if provided user file name is a .txt file
+def fileCheck(strFileName):
+    if ".txt" not in strFileName:
+        return False
+    return True       
 
+#Gets the desired menu from the user and checks if it is a valid choice
 def menu():
     process = input("\nPlease enter \"update\", \"add\", \"print\". Or enter \"done\" if you're finished with the program: ").lower()
 
