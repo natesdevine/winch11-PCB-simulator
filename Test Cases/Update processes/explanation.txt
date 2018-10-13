@@ -1,0 +1,1 @@
+This screenshot demonstrates our ability to update processes using the interface. As can be seen in the screenshot, the entered process ID must match a pre-existing process ID. Then, the user is given the option to update each parameter, and these updated selections are reflected when the process definitions are printed for a second time. 

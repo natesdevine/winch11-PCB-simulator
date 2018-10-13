@@ -1,0 +1,1 @@
+This screenshot shows the ability of our code to add new processes from a file. As can be seen in the screenshot, only a file that actually exists can be inputted for selection. Validity checks are performed on each parameter of the process definition, and a process is only validated and accepted if every parameter passes these checks. 
