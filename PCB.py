@@ -50,6 +50,7 @@ class Process(object):
     def setActive(self, newActive):
         self.active = newActive
     
+
 class PCB(object):
 
     def __init__(self, processes = []):      
@@ -76,8 +77,9 @@ class PCB(object):
                 print('Not acceptable hours')
                 return False
 
-            elif int(minutes) > 60 or int(minutes) < 0:
+            elif int(minutes) > 60 or int(minutes) < 0 or len(minutes) == 1:
                 print('Not acceptable minutes')
+                return False
 
         except(ValueError):
             return False
@@ -153,6 +155,16 @@ class PCB(object):
                 print("File not found. Try again")
                 filename = input("Please enter the filename of the file you would like to read in: ")
 
+
+    #Functions used for getting process' info from User
+    def getProcessInfo(self):
+        ID = self.getProcessID()
+        activity = self.getActivity()
+        priority = self.getPriority()
+        time = self.getTime()
+        mode = self.getMode()
+        return ID, activity, priority, time, mode
+
     def getProcessID(self):
         process = input("Please enter a process ID: ")
 
@@ -189,14 +201,8 @@ class PCB(object):
             mode = input("Please enter if process is User mode, \"True\" or \"False\": ")
         return mode
 
-    def getProcessInfo(self):
-        ID = self.getProcessID()
-        activity = self.getActivity()
-        priority = self.getPriority()
-        time = self.getTime()
-        mode = self.getMode()
-        return ID, activity, priority, time, mode
 
+    #Updates the queue with new processes from user
     def merge(self, process):
         self.processes.append(process)
         self.processes.sort(key=lambda process: int(process.priority), reverse = True)
@@ -204,6 +210,7 @@ class PCB(object):
         #SCHEDULING ALGORITHMS
         self.PCBqueue.put(process)
 
+    #Prints the processes, active and inactive, in the queue
     def printQueue(self, *args):
         if len(args) == 0:
             print("\nCurrent process queue: ")
@@ -215,7 +222,18 @@ class PCB(object):
         for elem in list(self.PCBqueue.queue):
             print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
 
-        
+    #standard method to print out all active processes
+    def print_active_processes(self):
+        active_list, inactive_list = [], []
+        for process in self.processes:
+            if process.isActive():
+                active_list.append(process.getKey())
+            else:
+                inactive_list.append(process.getKey())
+                
+        print("Of the processes you inputted, the active processes are: ", active_list)
+        print("Of the processes you inputted, the inactive processes are: ", inactive_list)
+         
     def updateProcessInfo(self):
         print("You will now be prompted to enter new process definitions for the selected process")
         newList = []
@@ -232,12 +250,8 @@ class PCB(object):
         
         return newList
 
-    def merge(self, process):
-        self.processes.append(process)
-        self.PCBqueue.put(process)
-
     #method to accept new processes dynamically (instead of from a file)
-    def getInput(self):
+    def add(self):
         loopFlag = True
         process_list = []
 
@@ -245,10 +259,6 @@ class PCB(object):
             try:
                 #print from queue IDs instead of process list
                 self.printQueue()
-
-                print("Current process queue: ")
-                for elem in list(self.PCBqueue.queue):
-                    print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
 
                 ans = input("\nCreate a process, \"True\" or \"False\":  ")
                 
@@ -262,28 +272,13 @@ class PCB(object):
                     newP = Process(ID, activity, priority, time, mode)
                     self.merge(newP)  
                     
-                #Update
                 elif ans == "False":
                     loopFlag = False
-                    self.printQueue('Final')
-
-                else:
-                    print("You have entered a duplicate process definition")
+                    self.printQueue('Updated')
 
             except ValueError:
                 print("Error. Please try again")
                 
-    #standard method to print out all active processes
-    def print_active_processes(self):
-        active_list, inactive_list = [], []
-        for process in self.processes:
-            if process.isActive():
-                active_list.append(process.getKey())
-            else:
-                inactive_list.append(process.getKey())
-                
-        print("Of the processes you inputted, the active processes are: ", active_list)
-        print("Of the processes you inputted, the inactive processes are: ", inactive_list)
     
     #searches for a process by ID, returns false if it does not exist
     def searchProcesses(self, processID):
@@ -372,7 +367,7 @@ def main():
         process = menu()
     
         if process == 'add':
-            PCB_obj.getInput()
+            PCB_obj.add()
 
         elif process == 'update':
             PCB_obj.update()
