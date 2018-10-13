@@ -37,6 +37,18 @@ class Process(object):
     
     def isActive(self):
         return self.active == 'True'
+        
+    def setPriority(self, newPriority):
+        self.priority = newPriority
+        
+    def setBirthday(self, newBirthday):
+        self.birthday = newBirthday
+    
+    def setMode(self, newMode):
+        self.mode = newMode
+    
+    def setActive(self, newActive):
+        self.active = newActive
     
 class PCB(object):
 
@@ -44,7 +56,6 @@ class PCB(object):
         self.processes = processes
         self.PCBqueue = queue.Queue()
         self.readFile()
-    #========
     
     #assorted methods to validate user inputted parameters processes
     def type_check(self, parameters):   
@@ -67,7 +78,7 @@ class PCB(object):
 
             elif int(minutes) > 60 or int(minutes) < 0:
                 print('Not acceptable minutes')
-                return False
+
         except(ValueError):
             return False
 
@@ -204,6 +215,26 @@ class PCB(object):
         for elem in list(self.PCBqueue.queue):
             print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
 
+        
+    def updateProcessInfo(self):
+        print("You will now be prompted to enter new process definitions for the selected process")
+        newList = []
+        
+        activity = self.getActivity()
+        priority = self.getPriority()
+        time = self.getTime()
+        mode = self.getMode()
+        
+        newList.append(priority)
+        newList.append(time)
+        newList.append(mode)
+        newList.append(activity)
+        
+        return newList
+
+    def merge(self, process):
+        self.processes.append(process)
+        self.PCBqueue.put(process)
 
     #method to accept new processes dynamically (instead of from a file)
     def getInput(self):
@@ -215,6 +246,10 @@ class PCB(object):
                 #print from queue IDs instead of process list
                 self.printQueue()
 
+                print("Current process queue: ")
+                for elem in list(self.PCBqueue.queue):
+                    print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
+
                 ans = input("\nCreate a process, \"True\" or \"False\":  ")
                 
                 while not self.bool_check(ans):
@@ -222,6 +257,8 @@ class PCB(object):
 
                 if ans == 'True':   
                     ID, activity, priority, time, mode = self.getProcessInfo()                  
+
+                    #create, append a process to queue
                     newP = Process(ID, activity, priority, time, mode)
                     self.merge(newP)  
                     
@@ -241,18 +278,22 @@ class PCB(object):
         active_list, inactive_list = [], []
         for process in self.processes:
             if process.isActive():
-                active_list.append(process)
+                active_list.append(process.getKey())
             else:
-                inactive_list.append(process)
+                inactive_list.append(process.getKey())
                 
         print("Of the processes you inputted, the active processes are: ", active_list)
         print("Of the processes you inputted, the inactive processes are: ", inactive_list)
+    
+    #searches for a process by ID, returns false if it does not exist
+    def searchProcesses(self, processID):
+        for process in self.processes:
+            if process.getKey() == processID:
+                return process
+        return None
 
     #method to update a process of the user's choice
     def update(self):
-        #updates = {}
-        #loop_Flag = True
-        #while loop_Flag:
         newProcess = input("Please enter the process ID of the process you would like to update.").lower()
         while not id_check(newProcess):
             newProcess = input("Please enter the process ID of the process you would like to update.").lower()
@@ -280,33 +321,37 @@ class PCB(object):
                 
                 updates[key] = value
 
+        newProcessID = input("Please enter the process ID of the process you would like to update: ").lower()
+        while not self.int_check(newProcessID):
+            newProcessID = input("Please enter the process ID of the process you would like to update: ").lower()
         
-    def add_new_process(self):
-        current_processes = self.processes
-            
-        loopFlag = True
-        while loopFlag:
-            try:
-                process = input("Please enter a process name and a process definition seperated by a comma. When you are finished, please type \"done\": ")
-                
-                process = ''.join(process.split())
-                
-                if process == "done":
-                    loopFlag = False
-                    return current_processes
-                    
-                elif process.split(",")[0].lower() in self.processes:
-                    print("You have entered a duplicate process definition")
-                    
-                elif process.split(",")[1].lower() != 'true' and process.split(",")[1].lower() != 'false':
-                    print("The process definition you entered was invalid")
-                
-                else:
-                    current_processes[process.split(",")[0]] = process.split(",")[1]
-                    # print(self.processes)
-
-            except ValueError:
-                print("Error. Please try again")
+        existingProcess = self.searchProcesses(newProcessID)
+        existingProcessIndex = self.processes.index(existingProcess)
+        
+        print("Current process definitions: ")
+        print("Key: ", existingProcess.getKey())
+        print("Priority: ", existingProcess.getPriority())
+        print("Birthday: ", existingProcess.getBirthday())
+        print("Mode: ", existingProcess.getMode())
+        print("isActive: ", existingProcess.isActive())
+        print("\n")
+        
+        newProcessValues = self.updateProcessInfo()
+        
+        self.processes[existingProcessIndex].setPriority(newProcessValues[0])
+        self.processes[existingProcessIndex].setBirthday(newProcessValues[1])
+        self.processes[existingProcessIndex].setMode(newProcessValues[2])
+        self.processes[existingProcessIndex].setActive(newProcessValues[3])
+        
+        print("New process definitions: ")
+        print("Key: ", existingProcess.getKey())
+        print("Priority: ", existingProcess.getPriority())
+        print("Birthday: ", existingProcess.getBirthday())
+        print("Mode: ", existingProcess.getMode())
+        print("isActive: ", existingProcess.isActive())
+        print("\n")
+        print("DONE NOW")
+        
 
 def menu():
     process = input("\nPlease enter \"update\", \"add\", \"print\". Or enter \"done\" if you're finished with the program: ").lower()
