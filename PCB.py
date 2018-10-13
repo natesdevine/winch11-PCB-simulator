@@ -100,7 +100,7 @@ class PCB(object):
                 return False
         return True
 
-        #Functions used for getting process' info from User
+    #Functions used for getting process' info from User
     def getProcessInfo(self):
         ID = self.getProcessID()
         activity = self.getActivity()
@@ -145,7 +145,7 @@ class PCB(object):
             mode = input("Please enter if process is User mode, \"True\" or \"False\": ")
         return mode
 
-        #Prints the processes, active and inactive, in the queue
+    #Prints the processes, active and inactive, in the queue
     def printQueue(self, *args):
         if len(args) == 0:
             print("\nCurrent process queue: ")
@@ -157,6 +157,9 @@ class PCB(object):
         for elem in list(self.PCBqueue.queue):
             print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
 
+    def printList(self):
+        for elem in self.processes:
+            print(elem.getKey(), elem.getPriority())
     #standard method to print out all active processes
     def print_active_processes(self):
         active_list, inactive_list = [], []
@@ -188,10 +191,7 @@ class PCB(object):
     #Updates the queue with new processes from user
     def merge(self, process):
         self.processes.append(process)
-        self.processes.sort(key=lambda process: int(process.priority), reverse = True)
-
-        #SCHEDULING ALGORITHMS
-        self.PCBqueue.put(process)
+        self.processes.sort(key=lambda process: int(process.priority), reverse = True) 
 
     #method to read in a list of processes from a .txt file (of CSV)
     def readFile(self):
@@ -245,6 +245,9 @@ class PCB(object):
             try:
                 #print from queue IDs instead of process list
                 self.printQueue()
+                print('test')
+                self.printList()
+                print('end')
 
                 ans = input("\nCreate a process, \"True\" or \"False\":  ")
                 
@@ -265,7 +268,7 @@ class PCB(object):
             except ValueError:
                 print("Error. Please try again")
 
-           
+    #updates a process' info      
     def updateProcessInfo(self):
         print("You will now be prompted to enter new process definitions for the selected process")
         newList = []
@@ -327,7 +330,7 @@ def main():
     while loopFlag:
 
         process = menu()
-    
+
         if process == 'add':
             PCB_obj.add()
 
