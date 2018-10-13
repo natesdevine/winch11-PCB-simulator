@@ -1,15 +1,5 @@
 import queue
 
-#method to sort list by key
-def takesThird(elem):
-    return elem[2]
-
-#checks to see if provided user file name is a .txt file
-def fileCheck(strFileName):
-    if ".txt" not in strFileName:
-        return False
-    return True
-
 class Process(object):
     
     #instance variables for process
@@ -314,7 +304,13 @@ class PCB(object):
         
         self.print_process_info(existingProcess)
         
+#checks to see if provided user file name is a .txt file
+def fileCheck(strFileName):
+    if ".txt" not in strFileName:
+        return False
+    return True
 
+#creates menu interface
 def menu():
     process = input("\nPlease enter \"update\", \"add\", \"print\". Or enter \"done\" if you're finished with the program: ").lower()
 
