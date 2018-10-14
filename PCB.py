@@ -1,5 +1,5 @@
 import queue
-from PCB_functions import *
+from PCB_utils import *
 
 class Process(object):
     
