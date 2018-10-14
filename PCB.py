@@ -96,7 +96,7 @@ class PCB(object):
     def merge(self, process):
         self.processes.append(process)
         self.processes.sort(key=lambda process: int(process.priority), reverse = True) 
-
+        self.PCBqueue.put(process)
     #method to read in a list of processes from a .txt file (of CSV)
     def readFile(self):
         processList = []
