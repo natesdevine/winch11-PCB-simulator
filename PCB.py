@@ -4,11 +4,11 @@ from PCB_utils import *
 class Process(object):
     
     #instance variables for process
-    def __init__(self, key, active, priority, birthday, mode):
+    def __init__(self, key, active, priority, time_created, mode):
         self.key = key
         self.active = active
         self.priority = priority
-        self.birthday = birthday
+        self.time_created = time_created
         self.mode = mode
     
     #standard get methods
@@ -18,8 +18,8 @@ class Process(object):
     def getPriority(self):
         return self.priority
          
-    def getBirthday(self):
-        return self.birthday
+    def getTimeCreated(self):
+        return self.time_created
         
     def getMode(self):
         return self.mode  
@@ -30,8 +30,8 @@ class Process(object):
     def setPriority(self, newPriority):
         self.priority = newPriority
         
-    def setBirthday(self, newBirthday):
-        self.birthday = newBirthday
+    def setTimeCreated(self, newtime_created):
+        self.time_created = newtime_created
     
     def setMode(self, newMode):
         self.mode = newMode
@@ -79,7 +79,7 @@ class PCB(object):
         print("Current process definitions: ")
         print("Key: ", someProcess.getKey())
         print("Priority: ", someProcess.getPriority())
-        print("Birthday: ", someProcess.getBirthday())
+        print("time_created: ", someProcess.getTimeCreated())
         print("Mode: ", someProcess.getMode())
         print("isActive: ", someProcess.isActive())
        
@@ -203,7 +203,7 @@ class PCB(object):
         newProcessValues = self.updateProcessInfo()
         
         self.processes[existingProcessIndex].setPriority(newProcessValues[0])
-        self.processes[existingProcessIndex].setBirthday(newProcessValues[1])
+        self.processes[existingProcessIndex].setTimeCreated(newProcessValues[1])
         self.processes[existingProcessIndex].setMode(newProcessValues[2])
         self.processes[existingProcessIndex].setActive(newProcessValues[3])
         
