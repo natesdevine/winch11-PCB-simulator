@@ -5,6 +5,7 @@ def fileCheck(strFileName):
     return True    
 
 #assorted methods to validate user inputted parameters processes
+#lets add a check for negative priority
 def type_check(processes, parameters):   
     if (len(parameters) != 5 or not bool_check(parameters[1]) or not bool_check(parameters[4])
         or not id_check(processes, parameters[0]) or not int_check(parameters[2])
