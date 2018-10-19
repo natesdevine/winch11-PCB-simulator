@@ -97,6 +97,7 @@ class PCB(object):
         self.processes.append(process)
         self.processes.sort(key=lambda process: int(process.priority), reverse = True) 
         self.PCBqueue.put(process)
+        
     #method to read in a list of processes from a .txt file (of CSV)
     def readFile(self):
         processList = []
@@ -157,7 +158,7 @@ class PCB(object):
                     ans = input("Create a process, \"True\" or \"False\":  ")
 
                 if ans == 'True':   
-                    ID, activity, priority, time, mode = getProcessInfo(self.processes)                  
+                    ID, activity, priority, time, mode = inputProcessInfo(self.processes)                  
 
                     #create, append a process to queue
                     newP = Process(ID, activity, priority, time, mode)
@@ -175,10 +176,10 @@ class PCB(object):
         print("You will now be prompted to enter new process definitions for the selected process")
         newList = []
         
-        activity = getActivity()
-        priority = getPriority()
-        time = getTime()
-        mode = getMode()
+        activity = inputActivity()
+        priority = inputPriority()
+        time = inputTime()
+        mode = inputMode()
         
         newList.append(priority)
         newList.append(time)

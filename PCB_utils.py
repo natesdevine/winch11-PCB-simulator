@@ -59,15 +59,15 @@ def id_check(processes, parameter):
     return True
 
 #Functions used for getting process' info from User
-def getProcessInfo(processes):
-    ID = getProcessID(processes)
-    activity = getActivity()
-    priority = getPriority()
-    time = getTime()
-    mode = getMode()
+def inputProcessInfo(processes):
+    ID = inputProcessID(processes)
+    activity = inputActivity()
+    priority = inputPriority()
+    time = inputTime()
+    mode = inputMode()
     return ID, activity, priority, time, mode
 
-def getProcessID(processes):
+def inputProcessID(processes):
     process = input("Please enter a process ID: ")
 
     #check for duplicates as well
@@ -75,27 +75,27 @@ def getProcessID(processes):
         process = input("Please enter a process ID: ")          
     return process
 
-def getActivity():
+def inputActivity():
     process = input("Please enter if process is active (\"True\" or \"False\"): ")
 
     while not bool_check(process):
         process = input("Please enter if process is active (\"True\" or \"False\"): ")          
     return process
 
-def getPriority():
+def inputPriority():
     priority = input("Please enter the priority (an integer): ")
 
     while not int_check(priority):
         priority = input("Please enter the priority (an integer): ")
     return priority         
 
-def getTime():
+def inputTime():
     time = input("Please enter the process' creation time (Hours:Minutes): ")
     while not time_check(time):
         time = input("Please enter the process' creation time (Hours:Minutes): ")
     return time
 
-def getMode():
+def inputMode():
     mode = input("Please enter if process is User mode (\"True\" or \"False\"): ")
     while not bool_check(mode):
         mode = input("Please enter if process is User mode (\"True\" or \"False\"): ")
