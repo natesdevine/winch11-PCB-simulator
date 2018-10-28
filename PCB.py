@@ -4,13 +4,14 @@ from PCB_utils import *
 class Process(object):
     
     #instance variables for process
-    def __init__(self, key, active, priority, time_created, mode):
+    def __init__(self, key, active, priority, time_created, mode, service_time):
         self.key = key
         self.active = active
         self.priority = priority
         self.time_created = time_created
         self.mode = mode
-    
+        self.service_time = service_time
+
     #standard get methods
     def getKey(self):
         return self.key
@@ -26,7 +27,10 @@ class Process(object):
     
     def isActive(self):
         return self.active == 'True'
-        
+    
+    def getServiceTime(self):
+        return self.service_time
+
     def setPriority(self, newPriority):
         self.priority = newPriority
         
@@ -39,6 +43,8 @@ class Process(object):
     def setActive(self, newActive):
         self.active = newActive
     
+    def setServiceTime(self, new_service_time):
+        self.service_time = new_service_time
 
 class PCB(object):
 
@@ -57,7 +63,7 @@ class PCB(object):
             print("\n" + string + ' process queue: ')    
 
         for elem in list(self.PCBqueue.queue):
-            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority())
+            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.getTimeCreated() + ", Service Time: " + elem.getServiceTime())
 
     def printList(self):
         for elem in self.processes:
@@ -79,11 +85,11 @@ class PCB(object):
         print("Current process definitions: ")
         print("Key: ", someProcess.getKey())
         print("Priority: ", someProcess.getPriority())
-        print("time_created: ", someProcess.getTimeCreated())
+        print("Arrival Time: ", someProcess.getTimeCreated())
+        print("Service Time: ", someProcess.getServiceTime())
         print("Mode: ", someProcess.getMode())
         print("isActive: ", someProcess.isActive())
        
-
     #searches for a process by ID, returns false if it does not exist
     def searchProcesses(self, processID):
         for process in self.processes:
@@ -126,7 +132,7 @@ class PCB(object):
                         print('Process ID ' + x[0] + ' has been validated')
 
                         #process is created for a given line of CSV here
-                        newP = Process(x[0], x[1], x[2], x[3], x[4])
+                        newP = Process(x[0], x[1], x[2], x[3], x[4], x[5])
                         processList.append(newP)  
                         
                     loopFlag = False
@@ -134,7 +140,7 @@ class PCB(object):
                     
                     for i in processList:
                         self.merge(i)  
-                    print('\n --- FINISHING READING FILE ---\n')
+                    print('\n --- FINISHED READING FILE ---\n')
             
                     self.print_active_processes()
             #exception handling for nonexistent file names
@@ -144,27 +150,29 @@ class PCB(object):
 
     #method to accept new processes dynamically (instead of from a file)
     def add(self):
-        loopFlag = True
         process_list = []
-
+        loopFlag = True
+        repeated = False
+        more_words = 'a'
+        
         while loopFlag:
             try:
                 #print from queue IDs instead of process list
-                self.printQueue()
+                if repeated == False:
+                    self.printQueue()
+                    more_words = "another"
 
-                ans = input("\nCreate a process, \"True\" or \"False\":  ")
+                ans = str_verify("\nCreate " + more_words + " process, \"True\" or \"False\":  ", "true,false", lower = 'yeet')
                 
-                while not bool_check(ans):
-                    ans = input("Create a process, \"True\" or \"False\":  ")
-
-                if ans == 'True':   
-                    ID, activity, priority, time, mode = inputProcessInfo(self.processes)                  
+                if ans == 'true':   
+                    ID, activity, priority, time, mode, service = inputProcessInfo(self.processes)                  
 
                     #create, append a process to queue
-                    newP = Process(ID, activity, priority, time, mode)
+                    newP = Process(ID, activity, priority, time, mode, service)
                     self.merge(newP)  
-                    
-                elif ans == "False":
+                    repeated = True
+
+                elif ans == "false":
                     loopFlag = False
                     self.printQueue('Updated')
 
@@ -180,17 +188,23 @@ class PCB(object):
         priority = inputPriority()
         time = inputTime()
         mode = inputMode()
+        service = inputService()
         
         newList.append(priority)
         newList.append(time)
         newList.append(mode)
         newList.append(activity)
+        newList.append(service)
         
         return newList
 
     #method to update a process of the user's choice
     def update(self):
+        keys = [elem.getKey() for elem in self.processes]
+        print("\nThe following processes can be updated: " + str(keys))
+
         processID = input("Please enter the process ID of the process you would like to update: ").lower()
+        
         while self.searchProcesses(processID) == False:
             print("Process with ID:", processID, "does not exist.")
             processID = input("Please enter the process ID of the process you would like to update: ").lower()
@@ -206,5 +220,6 @@ class PCB(object):
         self.processes[existingProcessIndex].setTimeCreated(newProcessValues[1])
         self.processes[existingProcessIndex].setMode(newProcessValues[2])
         self.processes[existingProcessIndex].setActive(newProcessValues[3])
-        
+        self.processes[existingProcessIndex].setServiceTime(newProcessValues[4])
+
         self.print_process_info(existingProcess)

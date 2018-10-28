@@ -1,19 +1,17 @@
 from PCB import *
+from PCB_utils import *
+import sys
 
 #Gets the desired menu from the user and checks if it is a valid choice
 def menu():
-    process = input("\nPlease enter \"update\", \"add\", \"print\". Or enter \"done\" if you're finished with the program: ").lower()
+    print("\nYou can:\n\tType \"add\" to add a new process\n\tType \"update\" to update a process\n\tType \"print\" to see active processes\n\tType \"finish\" exit the program.")
+    process = str_verify("\nI want to: ", "update,add,print,finish", lower = "yeet")
 
-    while process != 'add' and process != 'update' and process != 'done' and process != 'print':
-        print("Sorry, that isn't an acceptable answer.")
-        process = input("Please enter \"update\", \"add\" or \"done\": ").lower()
     return process
 
 def main():
     loopFlag = True
     PCB_obj = PCB()
-
-    print("\nYou can add a new process, update a process, see active processes or finish with the program")
 
     while loopFlag:
 
@@ -28,9 +26,9 @@ def main():
         elif process == 'print':
             PCB_obj.print_active_processes()
 
-        elif process == 'done':
+        elif process == 'finish':
             print("Smell ya later")
-            loopFlag = False
+            sys.exit()
 
 if __name__ == '__main__':
     main()

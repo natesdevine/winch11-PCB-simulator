@@ -7,9 +7,9 @@ def fileCheck(strFileName):
 #assorted methods to validate user inputted parameters processes
 #lets add a check for negative priority
 def type_check(processes, parameters):   
-    if (len(parameters) != 5 or not bool_check(parameters[1]) or not bool_check(parameters[4])
+    if (len(parameters) != 6 or not bool_check(parameters[1]) or not bool_check(parameters[4])
         or not id_check(processes, parameters[0]) or not int_check(parameters[2])
-        or not time_check(parameters[3])):
+        or not int_check(parameters[3]) or not int_check(parameters[5])):
         return False
     return True
 
@@ -66,7 +66,9 @@ def inputProcessInfo(processes):
     priority = inputPriority()
     time = inputTime()
     mode = inputMode()
-    return ID, activity, priority, time, mode
+    service = inputService()
+
+    return ID, activity, priority, time, mode, service
 
 def inputProcessID(processes):
     process = input("Please enter a process ID: ")
@@ -91,9 +93,9 @@ def inputPriority():
     return priority         
 
 def inputTime():
-    time = input("Please enter the process' creation time (Hours:Minutes): ")
-    while not time_check(time):
-        time = input("Please enter the process' creation time (Hours:Minutes): ")
+    time = input("Please enter the process' arrival time (Hours): ")
+    while not int_check(time):
+        time = input("Please enter the process' arrival time (Hours): ")
     return time
 
 def inputMode():
@@ -101,4 +103,29 @@ def inputMode():
     while not bool_check(mode):
         mode = input("Please enter if process is User mode (\"True\" or \"False\"): ")
     return mode
+
+def inputService():
+    service = input("Please enter the process' service time (Hours): ")
+    while not int_check(service):
+        service = input("Please enter the process' service time (Hours): ")
+    return service
+
+def str_verify(question, correct_ans, lower = None, upper = None):
+    accepted = correct_ans.split(',')
+    
+    if lower is not None:
+        ans = input(question).lower()
+    elif upper is not None:
+        ans = input(question).upper()
+    else:
+        ans = input(question)
+
+    while ans not in accepted:
+        if lower is not None:
+            ans = input("Inavalid input. " + question).lower()
+        elif upper is not None:
+            ans = input("Inavalid input. " + question).upper()
+        else:
+            ans = input(question)
+    return ans
 
