@@ -78,11 +78,11 @@ class PCB(object):
             else:
                 inactive_list.append(process.getKey())
                 
-        print("Of the processes you inputted, the active processes are: ", active_list)
-        print("Of the processes you inputted, the inactive processes are: ", inactive_list)
+        print("\nThe active processes are: ", active_list)
+        print("The inactive processes are: ", inactive_list)
        
     def print_process_info(self, someProcess):
-        print("Current process definitions: ")
+        print("\nCurrent process definition: ")
         print("Key: ", someProcess.getKey())
         print("Priority: ", someProcess.getPriority())
         print("Arrival Time: ", someProcess.getTimeCreated())
@@ -154,7 +154,7 @@ class PCB(object):
         loopFlag = True
         repeated = False
         more_words = 'a'
-        
+
         while loopFlag:
             try:
                 #print from queue IDs instead of process list
@@ -162,7 +162,7 @@ class PCB(object):
                     self.printQueue()
                     more_words = "another"
 
-                ans = str_verify("\nCreate " + more_words + " process, \"True\" or \"False\":  ", "true,false", lower = 'yeet')
+                ans = str_verify("\nWould you like to create " + more_words + " process (\"True\" or \"False\")?: ", "true,false", lower = 'yeet')
                 
                 if ans == 'true':   
                     ID, activity, priority, time, mode, service = inputProcessInfo(self.processes)                  
@@ -181,7 +181,7 @@ class PCB(object):
 
     #updates a process' info      
     def updateProcessInfo(self):
-        print("You will now be prompted to enter new process definitions for the selected process")
+        print("\nYou will now be prompted to enter new process definitions for the selected process")
         newList = []
         
         activity = inputActivity()
@@ -203,23 +203,27 @@ class PCB(object):
         keys = [elem.getKey() for elem in self.processes]
         print("\nThe following processes can be updated: " + str(keys))
 
-        processID = input("Please enter the process ID of the process you would like to update: ").lower()
-        
-        while self.searchProcesses(processID) == False:
-            print("Process with ID:", processID, "does not exist.")
+        ans = str_verify("Would you like to update one of the processes (True, False)?: ", "true,false", lower = "yeet")
+        if ans == 'true':
+
             processID = input("Please enter the process ID of the process you would like to update: ").lower()
+            
+            while self.searchProcesses(processID) == False:
+                print("Process with ID:", processID, "does not exist.")
+                processID = input("Please enter the process ID of the process you would like to update: ").lower()
 
-        existingProcess = self.searchProcesses(processID)
-        existingProcessIndex = self.processes.index(existingProcess)
+            existingProcess = self.searchProcesses(processID)
+            existingProcessIndex = self.processes.index(existingProcess)
 
-        self.print_process_info(existingProcess)
+            self.print_process_info(existingProcess)
+            
+            newProcessValues = self.updateProcessInfo()
+            
+            self.processes[existingProcessIndex].setPriority(newProcessValues[0])
+            self.processes[existingProcessIndex].setTimeCreated(newProcessValues[1])
+            self.processes[existingProcessIndex].setMode(newProcessValues[2])
+            self.processes[existingProcessIndex].setActive(newProcessValues[3])
+            self.processes[existingProcessIndex].setServiceTime(newProcessValues[4])
+
+            self.print_process_info(existingProcess)
         
-        newProcessValues = self.updateProcessInfo()
-        
-        self.processes[existingProcessIndex].setPriority(newProcessValues[0])
-        self.processes[existingProcessIndex].setTimeCreated(newProcessValues[1])
-        self.processes[existingProcessIndex].setMode(newProcessValues[2])
-        self.processes[existingProcessIndex].setActive(newProcessValues[3])
-        self.processes[existingProcessIndex].setServiceTime(newProcessValues[4])
-
-        self.print_process_info(existingProcess)

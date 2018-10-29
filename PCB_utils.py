@@ -71,7 +71,7 @@ def inputProcessInfo(processes):
     return ID, activity, priority, time, mode, service
 
 def inputProcessID(processes):
-    process = input("Please enter a process ID: ")
+    process = input("\nPlease enter a process ID: ")
 
     #check for duplicates as well
     while not id_check(processes, process):
