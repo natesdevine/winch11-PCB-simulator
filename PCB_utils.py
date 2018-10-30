@@ -37,6 +37,7 @@ def time_check(parameter):
 
 def bool_check(parameter):
     if parameter.lower() == 'true' or parameter.lower() == 'false':
+        #print("We boolin")
         return True
     print('Not an acceptable boolean')
     return False
