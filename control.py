@@ -1,6 +1,7 @@
 from PCB import *
 from PCB_utils import *
-#from Scheduling import *
+from scheduling import *
+from roundRobin import *
 import sys
 
 #Gets the desired menu from the user and checks if it is a valid choice
@@ -11,6 +12,9 @@ def menu():
     return action
 
 def main():
+    control_script()
+
+def control_script():
     PCB_obj = PCB()
 
     while True:
@@ -27,7 +31,7 @@ def main():
             PCB_obj.print_active_processes()
 
         elif action == 'schedule':
-            print("\nuh huh okay alright")
+            PCB_obj = rrValues(PCB_obj.getProcesses())
 
         elif action == 'finish':
             print("Smell ya later")

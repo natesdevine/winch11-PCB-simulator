@@ -60,6 +60,9 @@ class PCB(object):
         self.PCBqueue = queue.Queue()
         self.readFile()
 
+    def getProcesses(self):
+        return self.processes
+
     #Prints the processes, active and inactive, in the queue
     def printQueue(self, *args):
         word = "Current"
