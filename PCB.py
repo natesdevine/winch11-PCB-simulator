@@ -55,13 +55,11 @@ class PCB(object):
 
     #Prints the processes, active and inactive, in the queue
     def printQueue(self, *args):
-        if len(args) == 0:
-            print("\nCurrent process queue: ")
-
-        elif len(args) == 1:
-            string = str(args).replace("(", '').replace(')', '').replace(',', '').replace("'", '')
-            print("\n" + string + ' process queue: ')    
-
+        word = "Current"
+        if len(args) > 0:
+            word = str(args).replace("(", '').replace(')', '').replace(',', '').replace("'", '')
+            
+        print("\n" + word + ' process queue: ')    
         for elem in list(self.PCBqueue.queue):
             print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.getTimeCreated() + ", Service Time: " + elem.getServiceTime())
 
@@ -72,6 +70,7 @@ class PCB(object):
     #standard method to print out all active processes
     def print_active_processes(self):
         active_list, inactive_list = [], []
+        
         for process in self.processes:
             if process.isActive():
                 active_list.append(process.getKey())
@@ -81,13 +80,17 @@ class PCB(object):
         print("\nThe active processes are: ", active_list)
         print("The inactive processes are: ", inactive_list)
        
-    def print_process_info(self, someProcess):
-        print("\nCurrent process definition: ")
+    def print_process_info(self, someProcess, *args):
+        word = "Current"
+        if len(args) > 0:
+            word = 'Updated'
+
+        print("\n" + word + " process definition: ")
         print("Key: ", someProcess.getKey())
         print("Priority: ", someProcess.getPriority())
         print("Arrival Time: ", someProcess.getTimeCreated())
         print("Service Time: ", someProcess.getServiceTime())
-        print("Mode: ", someProcess.getMode())
+        print("User Mode: ", someProcess.getMode())
         print("isActive: ", someProcess.isActive())
        
     #searches for a process by ID, returns false if it does not exist
@@ -108,11 +111,9 @@ class PCB(object):
     def readFile(self):
         processList = []
         loopFlag = True
-        filename = input("Please enter the filename of the file you would like to read in: ")
-        while (not fileCheck(filename)):
-            print("Invalid file name.")
-            filename = input("Please enter the filename of the file you would like to read in: ")
         
+        filename = fileCheck("Please enter the filename of the file you would like to read in: ")
+
         while loopFlag:
             try:
                 print('\n --- READING FILE ---\n')
@@ -158,11 +159,13 @@ class PCB(object):
         while loopFlag:
             try:
                 #print from queue IDs instead of process list
-                if repeated == False:
-                    self.printQueue()
+                if repeated == True:
+                    self.printQueue("Updated")
                     more_words = "another"
+                elif repeated == False:
+                    self.printQueue()
 
-                ans = str_verify("\nWould you like to create " + more_words + " process (\"True\" or \"False\")?: ", "true,false", lower = 'yeet')
+                ans = str_verify("\nWould you like to create " + more_words + " process (\"True\"/\"False\")?: ", "true,false", lower = 'yeet')
                 
                 if ans == 'true':   
                     ID, activity, priority, time, mode, service = inputProcessInfo(self.processes)                  
@@ -203,7 +206,7 @@ class PCB(object):
         keys = [elem.getKey() for elem in self.processes]
         print("\nThe following processes can be updated: " + str(keys))
 
-        ans = str_verify("Would you like to update one of the processes (True, False)?: ", "true,false", lower = "yeet")
+        ans = str_verify("\nWould you like to update one of the processes (True/False)?: ", "true,false", lower = "yeet")
         if ans == 'true':
 
             processID = input("Please enter the process ID of the process you would like to update: ").lower()
@@ -225,5 +228,5 @@ class PCB(object):
             self.processes[existingProcessIndex].setActive(newProcessValues[3])
             self.processes[existingProcessIndex].setServiceTime(newProcessValues[4])
 
-            self.print_process_info(existingProcess)
+            self.print_process_info(existingProcess, 'uh huh okay, let me milly rock on these lamez')
         

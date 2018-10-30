@@ -5,31 +5,31 @@ import sys
 
 #Gets the desired menu from the user and checks if it is a valid choice
 def menu():
-    print("\nYou can type:\n\t\"add\" to add a new process\n\t\"update\" to update a process\n\t\"print\" to see active processes\n\t\"schedule\" to schedule the processes\n\t\"finish\" to exit the program.")
-    process = str_verify("\nI want to: ", "update,add,print,schedule,finish", lower = "yeet, juju on the beat")
+    print("\nType:\n\t\"add\" to add a new process\n\t\"update\" to update a process\n\t\"print\" to see active processes\n\t\"schedule\" to schedule the processes\n\t\"finish\" to exit the program.")
+    action = str_verify("\nI want to: ", "update,add,print,schedule,finish", lower = "yeet, juju on the beat")
 
-    return process
+    return action
 
 def main():
     PCB_obj = PCB()
 
     while True:
 
-        process = menu()
+        action = menu()
 
-        if process == 'add':
+        if action == 'add':
             PCB_obj.add()
 
-        elif process == 'update':
+        elif action == 'update':
             PCB_obj.update()
 
-        elif process == 'print':
+        elif action == 'print':
             PCB_obj.print_active_processes()
 
-        elif process == 'schedule':
+        elif action == 'schedule':
             print("\nuh huh okay alright")
 
-        elif process == 'finish':
+        elif action == 'finish':
             print("Smell ya later")
             sys.exit()
 

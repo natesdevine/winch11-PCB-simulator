@@ -1,8 +1,10 @@
 #checks to see if provided user file name is a .txt file
-def fileCheck(strFileName):
-    if ".txt" not in strFileName:
-        return False
-    return True    
+def fileCheck(question):
+	strFileName = input(question)
+	while ".txt" not in strFileName:
+		print("Invalid file name.")
+		strFileName = input(question)
+	return strFileName
 
 #assorted methods to validate user inputted parameters processes
 #lets add a check for negative priority
@@ -34,7 +36,7 @@ def time_check(parameter):
     return True
 
 def bool_check(parameter):
-    if parameter == 'True' or parameter == 'False':
+    if parameter.lower() == 'true' or parameter.lower() == 'false':
         return True
     print('Not an acceptable boolean')
     return False
@@ -79,35 +81,35 @@ def inputProcessID(processes):
     return process
 
 def inputActivity():
-    process = input("Please enter if process is active (\"True\" or \"False\"): ")
+    process = input("Please enter if process is active (\"True\"/\"False\"): ")
 
     while not bool_check(process):
-        process = input("Please enter if process is active (\"True\" or \"False\"): ")          
+        process = input("Please enter if process is active (\"True\"/\"False\"): ")          
     return process
 
 def inputPriority():
-    priority = input("Please enter the priority (an integer): ")
+    priority = input("Please enter the priority: ")
 
     while not int_check(priority):
-        priority = input("Please enter the priority (an integer): ")
+        priority = input("Please enter the priority: ")
     return priority         
 
 def inputTime():
-    time = input("Please enter the process' arrival time (Hours): ")
+    time = input("Please enter the process' arrival time: ")
     while not int_check(time):
-        time = input("Please enter the process' arrival time (Hours): ")
+        time = input("Please enter the process' arrival time: ")
     return time
 
 def inputMode():
-    mode = input("Please enter if process is User mode (\"True\" or \"False\"): ")
+    mode = input("Please enter if process is User mode (\"True\"/\"False\"): ")
     while not bool_check(mode):
-        mode = input("Please enter if process is User mode (\"True\" or \"False\"): ")
+        mode = input("Please enter if process is User mode (\"True\"/\"False\"): ")
     return mode
 
 def inputService():
-    service = input("Please enter the process' service time (Hours): ")
+    service = input("Please enter the process' service time: ")
     while not int_check(service):
-        service = input("Please enter the process' service time (Hours): ")
+        service = input("Please enter the process' service time: ")
     return service
 
 def str_verify(question, correct_ans, lower = None, upper = None):
