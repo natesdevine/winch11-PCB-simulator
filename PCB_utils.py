@@ -1,15 +1,15 @@
 #checks to see if provided user file name is a .txt file
 def fileCheck(question):
-	strFileName = input(question)
-	while ".txt" not in strFileName:
-		print("Invalid file name.")
-		strFileName = input(question)
-	return strFileName
+    strFileName = input(question)
+    while ".txt" not in strFileName:
+        print("Invalid file name.")
+        strFileName = input(question)
+    return strFileName
 
 #assorted methods to validate user inputted parameters processes
 #lets add a check for negative priority
 def type_check(processes, parameters):   
-    if (len(parameters) != 6 or not bool_check(parameters[1]) or not bool_check(parameters[4])
+    if (len(parameters) != 7 or not bool_check(parameters[1]) or not bool_check(parameters[4])
         or not id_check(processes, parameters[0]) or not int_check(parameters[2])
         or not int_check(parameters[3]) or not int_check(parameters[5])):
         return False
@@ -30,7 +30,7 @@ def time_check(parameter):
             print('Not acceptable minutes')
             return False
 
-    except(ValueError):
+    except ValueError:
         return False
 
     return True
@@ -70,8 +70,9 @@ def inputProcessInfo(processes):
     time = inputTime()
     mode = inputMode()
     service = inputService()
+    io_freq = input_io_freq()
 
-    return ID, activity, priority, time, mode, service
+    return ID, activity, priority, time, mode, service, io_freq
 
 def inputProcessID(processes):
     process = input("\nPlease enter a process ID: ")
@@ -112,6 +113,12 @@ def inputService():
     while not int_check(service):
         service = input("Please enter the process' service time: ")
     return service
+
+def input_io_freq():
+    io_freq = input("Please enter the process' IO frequency: ")
+    while not int_check(io_freq):
+        io_freq = input("Please enter the process' IO frequency: ")
+    return io_freq
 
 def str_verify(question, correct_ans, lower = None, upper = None):
     accepted = correct_ans.split(',')
