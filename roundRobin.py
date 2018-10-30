@@ -1,4 +1,6 @@
 from PCB_utils import *
+from control import *
+from PCB import *
 
 def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
     print("yeet")
@@ -67,15 +69,17 @@ def rrValues(processes):
     while not int_check(context_switch_penalty):
         context_switch_penalty = input("GIVE ME THAT context_switch_penalty: ")
 
-    print(processes)
+    print("\nTHE PROCESSES passed in ARE: ")
+    for elem in processes:
+        print(elem.getKey())
 
     ans = str_verify("\nYOU WANNA TEST RoundRobin (Y/N)?: ", "y,n", lower = 'uh huh')
     if ans == 'y':
-        RoundRobin()
+        RoundRobin(processes,io_duration, quantum, context_switch_penalty)
     elif ans == 'n':
-        ans = str_verify("\nALRIGHT DAWG, YOU WANNA GO BACK (y/n)?: ", "y,n", lower = 'yeet') 
+        ans = str_verify("\nALRIGHT DAWG, YOU WANNA RESTART (y/n)?: ", "y,n", lower = 'yeet') 
         if ans == 'y':
-            control_script(processes, io_duration, quantum, context_switch_penalty)
+            control_script()
         else:
             print("\nALRIGHT DAWG, THE PROGRAM FINNA DIE NOW")
             sys.exit()

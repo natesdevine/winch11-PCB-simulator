@@ -150,7 +150,7 @@ class PCB(object):
 
                         #throw error if false
                         if type_check(self.processes, x) == False:
-                            print("type check failed")
+                            # print("type check failed")
                             print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
                             continue
 
@@ -158,10 +158,7 @@ class PCB(object):
                         try:
                             newP = Process(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
                             processList.append(newP)
-                            
-                            print('test')
-                            newP.print_vals()
-                            
+                            # newP.print_vals()
                             print('Process ID ' + x[0] + ' has been validated')
 
                         except IndexError as e:
