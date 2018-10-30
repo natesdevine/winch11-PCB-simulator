@@ -38,6 +38,9 @@ class Process(object):
     def getIOCounter(self):
         return self.io_counter
 
+    def print_vals(self):
+        print(self.key, self.active, self.priority, self.time_created, self.mode, self.service_time, self.io_freq, self.io_counter)       
+
     def setPriority(self, newPriority):
         self.priority = newPriority
 
@@ -147,17 +150,23 @@ class PCB(object):
 
                         #throw error if false
                         if type_check(self.processes, x) == False:
+                            print("type check failed")
                             print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
                             continue
-
-                        #maybe return values in correct data format
-                        print('Process ID ' + x[0] + ' has been validated')
 
                         #process is created for a given line of CSV here
                         try:
                             newP = Process(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
                             processList.append(newP)
-                        except (IndexError):
+                            
+                            print('test')
+                            newP.print_vals()
+                            
+                            print('Process ID ' + x[0] + ' has been validated')
+
+                        except IndexError as e:
+                            print(e)
+                            
                             print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
                             continue
                             
