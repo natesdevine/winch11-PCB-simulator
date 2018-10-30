@@ -11,7 +11,7 @@ class Process(object):
         self.time_created = time_created
         self.mode = mode
         self.service_time = service_time
-        self.io_freq = io_freq
+        self.io_freq, self.io_counter = io_freq, io_freq
 
     #standard get methods
     def getKey(self):
@@ -35,6 +35,9 @@ class Process(object):
     def getIOFreq(self):
         return self.io_freq
 
+    def getIOCounter(self):
+        return self.io_counter
+
     def setPriority(self, newPriority):
         self.priority = newPriority
 
@@ -53,6 +56,9 @@ class Process(object):
     def setIOFreq(self, new_io_freq):
         self.io_freq = new_io_freq
 
+    def setIOCounter(self, new_io_counter):
+        self.io_counter = new_io_counter
+        
 class PCB(object):
 
     def __init__(self, processes = []):
@@ -104,6 +110,9 @@ class PCB(object):
         print("Service Time: ", someProcess.getServiceTime())
         print("User Mode: ", someProcess.getMode())
         print("isActive: ", someProcess.isActive())
+        print("IO Frequency: ", someProcess.getIOFreq())
+        print("IO Counter: ", someProcess.getIOCounter())
+        
 
     #searches for a process by ID, returns false if it does not exist
     def searchProcesses(self, processID):
@@ -145,9 +154,13 @@ class PCB(object):
                         print('Process ID ' + x[0] + ' has been validated')
 
                         #process is created for a given line of CSV here
-                        newP = Process(x[0], x[1], x[2], x[3], x[4], x[5])
-                        processList.append(newP)
-
+                        try:
+                            newP = Process(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
+                            processList.append(newP)
+                        except (IndexError):
+                            print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
+                            continue
+                            
                     loopFlag = False
                     processList.sort(key=lambda process: int(process.priority), reverse = True)
 
