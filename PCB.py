@@ -12,6 +12,7 @@ class Process(object):
         self.mode = mode
         self.service_time = service_time
         self.io_freq, self.io_counter = io_freq, io_freq
+        self.io_running = False
 
     #standard get methods
     def getKey(self):
