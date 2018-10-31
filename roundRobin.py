@@ -15,7 +15,7 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
     #while loop to run until processes complete
     while not(not_beginning and process_queue.empty() and current_process==None):
         #add processes to queue if they become available
-        while i<len(processes) and int(processes[i].time_created)<=t:
+        while i<len(processes) and processes[i].time_created<=t:
             process_queue.put(processes[i])
             i+=1
             not_beginning=True
