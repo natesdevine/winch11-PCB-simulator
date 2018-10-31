@@ -114,11 +114,19 @@ def inputService():
         service = input("Please enter the process' service time: ")
     return service
 
-def input_io_freq():
+def inputIOFreq():
     io_freq = input("Please enter the process' IO frequency: ")
     while not int_check(io_freq):
         io_freq = input("Please enter the process' IO frequency: ")
     return io_freq
+
+def inputIOCounter():
+    io_counter = input("Please enter the process' IO counter: ")
+    while not int_check(io_counter):
+        io_counter = input("Please enter the process' IO frequency: ")
+    return io_counter
+
+
 
 def str_verify(question, correct_ans, lower = None, upper = None):
     accepted = correct_ans.split(',')
