@@ -154,17 +154,18 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
 
 def rrValues(processes, run_interface, io_duration = None, quantum = None, context_switch_penalty = None):
     if run_interface == 'y':
-        print("\nPlease enter schedule values")
+        print("\nThe data file didn't contain critical values: IO Duration, Quantum, Context Switch Penalty")
+        print("\nPlease enter those values below")
         
-        io_duration = input("\nIO duration: ")
+        io_duration = input("IO duration: ")
         while not int_check(io_duration):
             io_duration = input("IO duration: ")
         
-        quantum = input("\nquantum: ")
+        quantum = input("quantum: ")
         while not int_check(quantum):
             quantum = input("quantum: ")
 
-        context_switch_penalty = input("\ncontext switch penalty: ")
+        context_switch_penalty = input("context switch penalty: ")
         while not int_check(context_switch_penalty):
             context_switch_penalty = input("context switch penalty: ")
 
