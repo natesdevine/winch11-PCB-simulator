@@ -172,7 +172,7 @@ def rrValues(processes, run_interface, io_duration = None, quantum = None, conte
     print("\nThe program detected the following variables from the data file: ")
     print("\tio_duration = " + str(io_duration) + "\n\tquantum = " + str(quantum) + "\n\tcontext_switch_penalty = " + str(context_switch_penalty))
 
-    print("\nThe processes passed in are: ")
+    print("\nThe keys of the processes passed in are: ")
     for elem in processes:
         print(elem.getKey())
         
@@ -182,3 +182,5 @@ def rrValues(processes, run_interface, io_duration = None, quantum = None, conte
         RoundRobin(processes,int(io_duration), int(quantum), int(context_switch_penalty))
     elif ans == 'fcfs':
         FirstComeFirstServe(processes,int(io_duration), int(context_switch_penalty))
+
+

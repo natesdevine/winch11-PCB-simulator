@@ -75,6 +75,11 @@ class PCB(object):
 
         self.readFile()
 
+    def isEmpty(self):
+        if len(self.processes) == 0:
+            return True
+        return False
+
     def schedule_values_exist(self):
         var1, var2, var3 = self.getScheduleValues()
 

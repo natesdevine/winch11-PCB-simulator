@@ -6,8 +6,8 @@ import sys
 
 #Gets the desired menu from the user and checks if it is a valid choice
 def menu():
-    print("\nType:\n\t\"add\" to add a new process\n\t\"update\" to update a process\n\t\"print\" to see active processes\n\t\"schedule\" to schedule the processes\n\t\"finish\" to exit the program.")
-    action = str_verify("\nI want to: ", "update,add,print,schedule,finish", lower = "yeet, juju on the beat")
+    print("\nType:\n\t\"add\" to add a new process\n\t\"update\" to update a process\n\t\"print\" to see active processes\n\t\"schedule\" to schedule the processes\n\t\"read\" to read a new data file\n\t\"finish\" to exit the program.")
+    action = str_verify("\nI want to: ", "update,add,print,read,schedule,finish", lower = "yeet, juju on the beat")
 
     return action
 
@@ -41,12 +41,15 @@ def control_script():
             if PCB_obj.schedule_values_exist() == True:
                 run_interface = 'n'
                 io_duration, quantum, context_switch_penalty = PCB_obj.getScheduleValues()
-                PCB_obj = rrValues(queue_list_copy, run_interface, io_duration, quantum, context_switch_penalty)
+                rrValues(queue_list_copy, run_interface, io_duration, quantum, context_switch_penalty)
             else:
                 run_interface = 'y'
-                PCB_obj = rrValues(queue_list_copy, run_interface)
+                rrValues(queue_list_copy, run_interface)
             
+        elif action == 'read':
 
+            ans = str_verify("Wo")
+            PCB_obj.readFile()
 
         elif action == 'finish':
             print("Smell ya later")
