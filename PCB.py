@@ -200,10 +200,10 @@ class PCB(object):
                 ans = str_verify("\nWould you like to create " + more_words + " process (\"True\"/\"False\")?: ", "true,false", lower = 'yeet')
                 
                 if ans == 'true':   
-                    ID, activity, priority, time, mode, service = inputProcessInfo(self.processes)                  
+                    ID, activity, priority, time, mode, service, io_freq = inputProcessInfo(self.processes)                  
 
                     #create, append a process to queue
-                    newP = Process(ID, activity, priority, time, mode, service)
+                    newP = Process(ID, activity, priority, time, mode, service, io_freq)
                     self.merge(newP)
                     repeated = True
 
