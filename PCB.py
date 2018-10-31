@@ -211,7 +211,8 @@ class PCB(object):
                     loopFlag = False
                     self.printQueue('Updated')
 
-            except ValueError:
+            except ValueError as e:
+                print(e)
                 print("Error. Please try again")
 
     #updates a process' info
