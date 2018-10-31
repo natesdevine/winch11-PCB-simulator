@@ -70,6 +70,14 @@ class PCB(object):
         self.PCBqueue = queue.Queue()
         self.readFile()
 
+        self.context_switch_penalty = None
+        self.quantum = None
+        self.io_duration = None
+
+
+    def getScheduleValues(self):
+        return (self.context_switch_penalty, self.quantum, self.io_duration)
+
     def getProcesses(self):
         return self.processes
 
@@ -133,23 +141,21 @@ class PCB(object):
         self.PCBqueue.put(process)
 
     def catchParams(self, line):
-        params = ["context_switch_penalty", "quantum", "io_duration"]
+        params = ["ContextSwitchPenalty", "Quantum", "I/ODuration"]
         
-        values = line.split("=")
+        value = line.split("=")
         
         if value[0] == params[0]:
-            context_switch_penalty = value[1]
-            return context_switch_penalty
+            self.context_switch_penalty = value[1]
 
         elif value[0] == params[1]:
-            quantum = value[1]
-            return quantum
+            self.quantum = value[1]
         
         elif value[0] == params[2]:
-            io_duration = value[1]
-            return io_duration
-        
-
+            self.io_duration = value[1]
+        else:
+            pass
+            # print('nuh uh, you aint getting a value')
 
     #method to read in a list of processes from a .txt file (of CSV)
     def readFile(self):
@@ -168,6 +174,14 @@ class PCB(object):
                         i = i.rstrip().replace(' ', '')
                         x = i.split(",")
 
+                        if len(x) == 1:
+                            x = "".join(x)
+                            self.catchParams(x)   
+                            # try:
+                            #     print("Contxt", self.context_switch_penalty, "quant", self.quantum, "ioduration", self.io_duration)                            
+                            # except AttributeError as e:
+                            #     print(e)
+                            continue
 
                         #throw error if false
                         if type_check(self.processes, x) == False:
@@ -196,6 +210,7 @@ class PCB(object):
                     print('\n --- FINISHED READING FILE ---\n')
 
                     self.print_active_processes()
+
             #exception handling for nonexistent file names
             except (FileNotFoundError):
                 print("File not found. Try again")
