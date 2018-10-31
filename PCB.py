@@ -116,7 +116,7 @@ class PCB(object):
         print("\n" + word + ' process queue: ')    
 
         for elem in list(self.PCBqueue.queue):
-            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.getTimeCreated() + ", Service Time: " + elem.getServiceTime() + ", IO Freq: " + elem.getIOFreq())
+            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.getTimeCreated() + ", Service Time: " + str(elem.getServiceTime()) + ", IO Freq: " + str(elem.getIOFreq()))
 
     def printList(self):
         for elem in self.processes:
