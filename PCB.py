@@ -75,6 +75,14 @@ class PCB(object):
 
         self.readFile()
 
+    def empty(self):
+        self.processes = []
+        self.PCBqueue = queue.Queue()
+        
+        self.context_switch_penalty = None
+        self.quantum = None
+        self.io_duration = None        
+
     def isEmpty(self):
         if len(self.processes) == 0:
             return True

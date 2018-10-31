@@ -47,9 +47,21 @@ def control_script():
                 rrValues(queue_list_copy, run_interface)
             
         elif action == 'read':
+            if PCB_obj.isEmpty():
+                PCB_obj.readFile()
 
-            ans = str_verify("Wo")
-            PCB_obj.readFile()
+            else:
+                print("\nThe queue currently isn't empty. You can either add to or clear the current queue.")
+                ans = str_verify("\nWould you like to add or clear the current queue (add/clear)?: ", "add,clear", lower = "uh huh")
+                
+                if ans == 'clear':
+                    PCB_obj.empty()
+                    print("\nClearing the queue...")
+                    print("Ready for a new file...\n")
+                    PCB_obj.readFile()
+                else:
+                    print()
+                    PCB_obj.readFile()
 
         elif action == 'finish':
             print("Smell ya later")
