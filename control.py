@@ -50,18 +50,19 @@ def control_script():
                 pass
 
             else:
-                print("\nFORCED RERUN\n")
+                pass
+                # print("\nFORCED RERUN\n")
                 
-                print("TEST BEFORE")
-                PCB_obj.printQueue()
-                PCB_obj.empty()
+                # print("TEST BEFORE")
+                # PCB_obj.printQueue()
+                # PCB_obj.empty()
                 
-                print("\nTEST AFTER")
-                PCB_obj.printQueue()
+                # print("\nTEST AFTER")
+                # PCB_obj.printQueue()
                 
-                print("\nAFTER FORCED RERUN")
-                PCB_obj.readFile(forced_rerun = 'yeet')
-                PCB_obj.printQueue()
+                # print("\nAFTER FORCED RERUN")
+                # PCB_obj.readFile(forced_rerun = 'yeet')
+                # PCB_obj.printQueue()
 
         elif action == 'read':
             if PCB_obj.isEmpty():

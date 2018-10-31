@@ -189,7 +189,9 @@ class PCB(object):
         if forced_rerun is None:
             filename = fileCheck("Please enter the filename of the file you would like to read in: ")
         elif forced_rerun is not None:
+            print("TEST")
             filename = self.getOGFileName()
+            print(filename)
 
         while loopFlag:
             try:
@@ -243,7 +245,7 @@ class PCB(object):
                         print('\n --- FINISHED READING FILE ---\n')
                         self.print_active_processes()
 
-                        self.og_file_name = filename
+                    self.og_file_name = filename
             #exception handling for nonexistent file names
             except (FileNotFoundError):
                 print("File not found. Try again")
