@@ -12,7 +12,7 @@ class Process(object):
         self.mode = mode
         self.service_time = service_time
         self.io_freq, self.io_counter = io_freq, io_freq
-        self.io_running = False
+        self.io_quantum = 0
 
     #standard get methods
     def getKey(self):
@@ -61,7 +61,7 @@ class Process(object):
         self.io_freq = new_io_freq
 
     def setIOCounter(self, new_io_counter):
-        self.io_counter = new_io_counter
+        self.io_counter = new_io_counter 
         
 class PCB(object):
 
@@ -189,9 +189,9 @@ class PCB(object):
         if forced_rerun is None:
             filename = fileCheck("Please enter the filename of the file you would like to read in: ")
         elif forced_rerun is not None:
-            print("TEST")
+            # print("TEST")
             filename = self.getOGFileName()
-            print(filename)
+            # print(filename)
 
         while loopFlag:
             try:

@@ -46,22 +46,19 @@ def control_script():
                 run_interface = 'y'
                 schedule = rrValues(queue_list_copy, run_interface)
             
-            if schedule == 'fcfs':
-                pass
-
-            else:
-                pass
+            if schedule == 'fcfs' or schedule == 'rr':
                 # print("\nFORCED RERUN\n")
                 
                 # print("TEST BEFORE")
                 # PCB_obj.printQueue()
-                # PCB_obj.empty()
+                
                 
                 # print("\nTEST AFTER")
                 # PCB_obj.printQueue()
                 
                 # print("\nAFTER FORCED RERUN")
-                # PCB_obj.readFile(forced_rerun = 'yeet')
+                PCB_obj.empty()
+                PCB_obj.readFile(forced_rerun = 'yeet')
                 # PCB_obj.printQueue()
 
         elif action == 'read':
