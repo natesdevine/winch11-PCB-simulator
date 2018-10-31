@@ -41,11 +41,28 @@ def control_script():
             if PCB_obj.schedule_values_exist() == True:
                 run_interface = 'n'
                 io_duration, quantum, context_switch_penalty = PCB_obj.getScheduleValues()
-                rrValues(queue_list_copy, run_interface, io_duration, quantum, context_switch_penalty)
+                schedule = rrValues(queue_list_copy, run_interface, io_duration, quantum, context_switch_penalty)
             else:
                 run_interface = 'y'
-                rrValues(queue_list_copy, run_interface)
+                schedule = rrValues(queue_list_copy, run_interface)
             
+            if schedule == 'fcfs':
+                pass
+
+            else:
+                print("\nFORCED RERUN\n")
+                
+                print("TEST BEFORE")
+                PCB_obj.printQueue()
+                PCB_obj.empty()
+                
+                print("\nTEST AFTER")
+                PCB_obj.printQueue()
+                
+                print("\nAFTER FORCED RERUN")
+                PCB_obj.readFile(forced_rerun = 'yeet')
+                PCB_obj.printQueue()
+                
         elif action == 'read':
             if PCB_obj.isEmpty():
                 PCB_obj.readFile()

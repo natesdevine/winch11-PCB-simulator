@@ -180,7 +180,8 @@ def rrValues(processes, run_interface, io_duration = None, quantum = None, conte
     ans = str_verify("\nI choose: ", "rr,fcfs", lower = 'uh huh')
     if ans == 'rr':
         RoundRobin(processes,int(io_duration), int(quantum), int(context_switch_penalty))
+        return 'rr'
     elif ans == 'fcfs':
         FirstComeFirstServe(processes,int(io_duration), int(context_switch_penalty))
-
+        return 'fcfs'
 

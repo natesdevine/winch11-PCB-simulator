@@ -72,8 +72,13 @@ class PCB(object):
         self.context_switch_penalty = None
         self.quantum = None
         self.io_duration = None
+        self.og_file_name = None
 
         self.readFile()
+
+
+    def getOGFileName(self):
+        return self.og_file_name
 
     def empty(self):
         self.processes = []
@@ -177,15 +182,20 @@ class PCB(object):
             # print('nuh uh, you aint getting a value')
 
     #method to read in a list of processes from a .txt file (of CSV)
-    def readFile(self):
+    def readFile(self, forced_rerun = None):
         processList = []
         loopFlag = True
 
-        filename = fileCheck("Please enter the filename of the file you would like to read in: ")
+        if forced_rerun is None:
+            filename = fileCheck("Please enter the filename of the file you would like to read in: ")
+        elif forced_rerun is not None:
+            filename = self.getOGFileName()
 
         while loopFlag:
             try:
-                print('\n --- READING FILE ---\n')
+
+                if forced_rerun is None:
+                    print('\n --- READING FILE ---\n')
 
                 with open(filename) as infile:
                     for i in infile:
@@ -203,9 +213,10 @@ class PCB(object):
                             continue
 
                         #throw error if false
-                        if type_check(self.processes, x) == False:
+                        if type_check(self.processes, x, show_errors = 'nah') == False:
                             # print("type check failed")
-                            print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
+                            if forced_rerun is None:
+                                print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
                             continue
 
                         #process is created for a given line of CSV here
@@ -213,11 +224,13 @@ class PCB(object):
                             newP = Process(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
                             processList.append(newP)
                             # newP.print_vals()
-                            print('Process ID ' + x[0] + ' has been validated')
+                            if forced_rerun is None:
+                                print('Process ID ' + x[0] + ' has been validated')
 
                         except IndexError as e:
                             print(e)
-                            print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
+                            if forced_rerun is None:
+                                print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
                             continue
                             
                     loopFlag = False
@@ -225,10 +238,12 @@ class PCB(object):
 
                     for i in processList:
                         self.merge(i)
-                    print('\n --- FINISHED READING FILE ---\n')
 
-                    self.print_active_processes()
+                    if forced_rerun is None:
+                        print('\n --- FINISHED READING FILE ---\n')
+                        self.print_active_processes()
 
+                    self.og_file_name = filename
             #exception handling for nonexistent file names
             except (FileNotFoundError):
                 print("File not found. Try again")

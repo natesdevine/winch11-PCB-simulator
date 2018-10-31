@@ -8,14 +8,14 @@ def fileCheck(question):
 
 #assorted methods to validate user inputted parameters processes
 #lets add a check for negative priority
-def type_check(processes, parameters):   
-    if (len(parameters) != 7 or not bool_check(parameters[1]) or not bool_check(parameters[4])
-        or not id_check(processes, parameters[0]) or not int_check(parameters[2])
-        or not int_check(parameters[3]) or not int_check(parameters[5])):
+def type_check(processes, parameters, show_errors = 'yeet'):   
+    if (len(parameters) != 7 or not bool_check(parameters[1], show_errors) or not bool_check(parameters[4], show_errors)
+        or not id_check(processes, parameters[0], show_errors) or not int_check(parameters[2], show_errors)
+        or not int_check(parameters[3], show_errors) or not int_check(parameters[5], show_errors)):
         return False
     return True
 
-def time_check(parameter):
+def time_check(parameter, show_errors = 'yeet'):
     if ":" not in parameter:
         return False
 
@@ -35,29 +35,33 @@ def time_check(parameter):
 
     return True
 
-def bool_check(parameter):
+def bool_check(parameter,show_errors = 'yeet'):
     if parameter.lower() == 'true' or parameter.lower() == 'false':
         #print("We boolin")
         return True
-    print('Not an acceptable boolean')
+    if show_errors == 'yeet':
+        print('Not an acceptable boolean')
     return False
 
-def int_check(parameter):
+def int_check(parameter, show_errors = 'yeet'):
     #check is digits and IF DUPlICATES
     if not parameter.isdigit():
-        print('Not an integer')
+        if show_errors == 'yeet':
+            print('Not an integer')
         return False
 
     return True
 
-def id_check(processes, parameter):
+def id_check(processes, parameter, show_errors = 'yeet'):
     #first check if id is an integer
     if not int_check(parameter):
         return False
 
+
     for elem in processes:
         if elem.getKey() == parameter:
-            print('Error: ID ' + str(parameter) + " already exists")
+            if show_errors == 'yeet':
+                print('Error: ID ' + str(parameter) + " already exists")
             # print(elem.getKey(), parameter, "test")
             return False
     return True
