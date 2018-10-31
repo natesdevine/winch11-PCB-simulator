@@ -15,7 +15,8 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
     #while loop to run until processes complete
     while not(not_beginning and process_queue.empty() and current_process==None):
         #add processes to queue if they become available
-        while i<len(processes) and processes[i].time_created<=t:
+        print('t',t)
+        while i<len(processes) and int(processes[i].time_created)<=t:
             process_queue.put(processes[i])
             i+=1
             not_beginning=True
@@ -25,7 +26,7 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
         if current_process==None and not process_queue.empty():
             t+=context_switch_penalty
             current_process=process_queue.get()
-            print('got process', current_process.key)
+            #print('got process', current_process.key)
             #print(current_process.io_counter,current_process.io_freq, current_process.io_running)
             
         #run current process for 1 time unit
@@ -45,18 +46,18 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
                     
             #if an io event is running, use one time unit on it
             if current_process.io_running==True:
-                print('io running', current_process.io_counter -1, "clocks left")
-                current_process.io_counter-=1
+                print('io running', int(current_process.io_counter) -1, "clocks left")
+                current_process.io_counter=int(current_process.io_counter)-1
                 
             #if no io event, run process
             if current_process.io_running==False:
-                print('program running', current_process.key, current_process.service_time -1, "clocks left")
-                current_process.service_time-=1
-                current_process.io_counter-=1
+                print('program running', current_process.key, int(current_process.service_time) -1, "clocks left")
+                current_process.service_time=int(current_process.service_time)-1
+                current_process.io_counter=int(current_process.io_counter)-1
             #one time unit was used on either the io event or the current process
             #so decrement quantum
             q-=1
-            print('q',q)
+            #print('q',q)
             #if quantum runs out kick current program
             if q==0:
                 print("quantum used")
@@ -78,7 +79,6 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
         #increment time at each iteration
         print('\n\n')
         t+=1
-        print('t',t)
             
 def sort_time_available(process):
     return process.time_created
@@ -104,7 +104,7 @@ def rrValues(processes):
 
     ans = str_verify("\nYOU WANNA TEST RoundRobin (Y/N)?: ", "y,n", lower = 'uh huh')
     if ans == 'y':
-        RoundRobin(processes,io_duration, quantum, context_switch_penalty)
+        RoundRobin(processes,int(io_duration), int(quantum), int(context_switch_penalty))
     elif ans == 'n':
         ans = str_verify("\nALRIGHT DAWG, YOU WANNA RESTART (y/n)?: ", "y,n", lower = 'yeet') 
         if ans == 'y':
