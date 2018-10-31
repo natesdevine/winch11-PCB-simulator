@@ -82,7 +82,7 @@ class PCB(object):
         print("\n" + word + ' process queue: ')    
 
         for elem in list(self.PCBqueue.queue):
-            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.getTimeCreated() + ", Service Time: " + elem.getServiceTime())
+            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.getTimeCreated() + ", Service Time: " + elem.getServiceTime() + ", IO Freq: " + elem.getIOFreq())
 
     def printList(self):
         for elem in self.processes:
@@ -132,6 +132,25 @@ class PCB(object):
         self.processes.sort(key=lambda process: int(process.priority), reverse = True)
         self.PCBqueue.put(process)
 
+    def catchParams(self, line):
+        params = ["context_switch_penalty", "quantum", "io_duration"]
+        
+        values = line.split("=")
+        
+        if value[0] == params[0]:
+            context_switch_penalty = value[1]
+            return context_switch_penalty
+
+        elif value[0] == params[1]:
+            quantum = value[1]
+            return quantum
+        
+        elif value[0] == params[2]:
+            io_duration = value[1]
+            return io_duration
+        
+
+
     #method to read in a list of processes from a .txt file (of CSV)
     def readFile(self):
         processList = []
@@ -148,6 +167,7 @@ class PCB(object):
                         #stip other stuff too, not just r
                         i = i.rstrip().replace(' ', '')
                         x = i.split(",")
+
 
                         #throw error if false
                         if type_check(self.processes, x) == False:

@@ -34,7 +34,8 @@ def control_script():
                 print("\nThe queue is currently empty of processes")
 
         elif action == 'schedule':
-            PCB_obj = rrValues(PCB_obj.getProcesses())
+            queue_list = PCB_obj.getProcesses()
+            PCB_obj = rrValues(queue_list)
 
         elif action == 'finish':
             print("Smell ya later")
