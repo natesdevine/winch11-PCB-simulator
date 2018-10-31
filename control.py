@@ -16,7 +16,7 @@ def main():
 
 def control_script():
     PCB_obj = PCB()
-
+        
     while True:
 
         action = menu()
@@ -34,8 +34,8 @@ def control_script():
                 print("\nThe queue is currently empty of processes")
 
         elif action == 'schedule':
-            queue_list = PCB_obj.getProcesses()
-            PCB_obj = rrValues(queue_list)
+            queue_list_copy = PCB_obj.getProcesses()[:]
+            PCB_obj = rrValues(queue_list_copy)
 
         elif action == 'finish':
             print("Smell ya later")
