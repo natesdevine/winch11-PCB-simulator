@@ -225,12 +225,16 @@ class PCB(object):
         time = inputTime()
         mode = inputMode()
         service = inputService()
+        io_freq = inputIOFreq()
+        io_counter = inputIOCounter()
 
         newList.append(priority)
         newList.append(time)
         newList.append(mode)
         newList.append(activity)
         newList.append(service)
+        newList.append(io_freq)
+        newList.append(io_counter)
 
         return newList
 
@@ -260,6 +264,9 @@ class PCB(object):
             self.processes[existingProcessIndex].setMode(newProcessValues[2])
             self.processes[existingProcessIndex].setActive(newProcessValues[3])
             self.processes[existingProcessIndex].setServiceTime(newProcessValues[4])
+            self.processes[existingProcessIndex].setIOFreq(newProcessValues[5])
+            self.processes[existingProcessIndex].setIOCounter(newProcessValues[6])
+
 
             self.print_process_info(existingProcess, 'uh huh okay, let me milly rock on these lamez')
         
