@@ -12,6 +12,7 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
     q=quantum
     current_process=None
     not_beginning=False
+
     #while loop to run until processes complete
     while not(not_beginning and process_queue.empty() and current_process==None):
         #add processes to queue if they become available
@@ -82,33 +83,97 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
             
 def sort_time_available(process):
     return process.time_created
-            
+
+
+#First come first serve
+def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
+    
+    processes.sort(key=sort_time_available)
+    process_queue=queue.Queue()
+    for i in processes:
+        process_queue.put(i)
+    
+    if process_queue.empty():
+        print("No process to schedule")
+        return
+
+    print("TIME","STATUS/PROCESS", sep="\t")
+    current_time = 0
+
+    while not process_queue.empty():
+        # serve the process at front of the queue
+        front = process_queue.get()
+
+        # get relevant
+        key = front.getKey()
+        time_created = int(front.getTimeCreated())
+        service_time = int(front.getServiceTime())
+        io_freq = int(front.getIOFreq())
+
+        # the system is idle until the process arrives
+        if current_time < time_created:
+            print(current_time, "idle", sep="\t")
+
+        while (current_time < time_created):
+            current_time += 1
+
+        # serve the front process
+        print(current_time, "process "+str(key), sep="\t")
+
+        # keep track of time served for the process
+        time_served = 0
+
+        # loop until process completes
+        while (service_time > 0):
+            service_time -= 1
+            time_served += 1
+            current_time += 1
+
+            # check for io event
+            if (io_freq > 0 and service_time > 0 and time_served % io_freq == 0):
+                if (context_switch_penalty > 0):
+                    print(current_time, "switch", sep="\t")
+                    current_time += context_switch_penalty
+
+                # announce io event
+                print(current_time, "io", sep="\t")
+                current_time += io_duration
+
+                # switch back to the process
+                if (context_switch_penalty > 0):
+                    print(current_time, "switch", sep="\t")
+                    current_time += context_switch_penalty
+                print(current_time, "process "+str(key), sep="\t")
+
+        # switch to either idle or the next process
+        if (context_switch_penalty > 0):
+            print(current_time, "switch", sep="\t")
+            current_time += context_switch_penalty
+
+    print(current_time, "finished", sep="\t")
+
 def rrValues(processes):
-    print("\nGUCCI GANG MAN HERE, GIVE ME DEM VALUES")
+    print("\nPlease enter schedule values")
     
-    io_duration = input("\nGIVE ME THAT io_duration: ")
+    io_duration = input("\nIO duration: ")
     while not int_check(io_duration):
-        io_duration = input("GIVE ME THAT io_duration: ")
+        io_duration = input("IO duration: ")
     
-    quantum = input("\nGIVE ME THAT quantum: ")
+    quantum = input("\nquantum: ")
     while not int_check(quantum):
-        quantum = input("GIVE ME THAT quantum: ")
+        quantum = input("quantum: ")
 
-    context_switch_penalty = input("\nGIVE ME THAT context_switch_penalty: ")
+    context_switch_penalty = input("\ncontext switch penalty: ")
     while not int_check(context_switch_penalty):
-        context_switch_penalty = input("GIVE ME THAT context_switch_penalty: ")
+        context_switch_penalty = input("context switch penalty: ")
 
-    print("\nTHE PROCESSES passed in ARE: ")
+    print("\nThe processes passed in are: ")
     for elem in processes:
         print(elem.getKey())
-
-    ans = str_verify("\nYOU WANNA TEST RoundRobin (Y/N)?: ", "y,n", lower = 'uh huh')
-    if ans == 'y':
+        
+    print("\nType:\n\t\"rr\" to schedule using Round Robin\n\t\"fcfs\" to schedule using First Come First Serve.")
+    ans = str_verify("\nI choose: ", "rr,fcfs", lower = 'uh huh')
+    if ans == 'rr':
         RoundRobin(processes,int(io_duration), int(quantum), int(context_switch_penalty))
-    elif ans == 'n':
-        ans = str_verify("\nALRIGHT DAWG, YOU WANNA RESTART (y/n)?: ", "y,n", lower = 'yeet') 
-        if ans == 'y':
-            control_script()
-        else:
-            print("\nALRIGHT DAWG, THE PROGRAM FINNA DIE NOW")
-            sys.exit()
+    elif ans == 'fcfs':
+        FirstComeFirstServe(processes,int(io_duration), int(context_switch_penalty))
