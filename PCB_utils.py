@@ -136,18 +136,18 @@ def str_verify(question, correct_ans, lower = None, upper = None):
     accepted = correct_ans.split(',')
     
     if lower is not None:
-        ans = input(question).lower()
+        ans = input(question).lower().replace(' ', '')
     elif upper is not None:
-        ans = input(question).upper()
+        ans = input(question).upper().replace(' ', '')
     else:
-        ans = input(question)
+        ans = input(question).replace(' ', '')
 
     while ans not in accepted:
         if lower is not None:
-            ans = input("Inavalid input. " + question).lower()
+            ans = input("Inavalid input. " + question).lower().replace(' ', '')
         elif upper is not None:
-            ans = input("Inavalid input. " + question).upper()
+            ans = input("Inavalid input. " + question).upper().replace(' ', '')
         else:
-            ans = input(question)
+            ans = input(question).replace(' ', '')
     return ans
 

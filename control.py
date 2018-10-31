@@ -40,8 +40,8 @@ def control_script():
             #determine if user needs to be prompted for io_duration, quantum and context_switch_penalty
             if PCB_obj.schedule_values_exist() == True:
                 run_interface = 'n'
-                io_duration, quantum, context_switch_penalty = PCB_obj.getScheduleValues()
-                schedule = rrValues(queue_list_copy, run_interface, io_duration, quantum, context_switch_penalty)
+                context_switch_penalty, quantum, io_duration = PCB_obj.getScheduleValues()
+                schedule = rrValues(queue_list_copy, run_interface, context_switch_penalty, quantum, io_duration)
             else:
                 run_interface = 'y'
                 schedule = rrValues(queue_list_copy, run_interface)
@@ -62,7 +62,7 @@ def control_script():
                 print("\nAFTER FORCED RERUN")
                 PCB_obj.readFile(forced_rerun = 'yeet')
                 PCB_obj.printQueue()
-                
+
         elif action == 'read':
             if PCB_obj.isEmpty():
                 PCB_obj.readFile()

@@ -243,7 +243,7 @@ class PCB(object):
                         print('\n --- FINISHED READING FILE ---\n')
                         self.print_active_processes()
 
-                    self.og_file_name = filename
+                        self.og_file_name = filename
             #exception handling for nonexistent file names
             except (FileNotFoundError):
                 print("File not found. Try again")

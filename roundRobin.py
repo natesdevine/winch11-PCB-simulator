@@ -152,7 +152,7 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
 
     print(current_time, "finished", sep="\t")
 
-def rrValues(processes, run_interface, io_duration = None, quantum = None, context_switch_penalty = None):
+def rrValues(processes, run_interface, context_switch_penalty = None, quantum = None, io_duration = None):
     if run_interface == 'y':
         print("\nThe data file didn't contain critical values: IO Duration, Quantum, Context Switch Penalty")
         print("\nPlease enter those values below")
@@ -168,9 +168,9 @@ def rrValues(processes, run_interface, io_duration = None, quantum = None, conte
         context_switch_penalty = input("context switch penalty: ")
         while not int_check(context_switch_penalty):
             context_switch_penalty = input("context switch penalty: ")
-
-    print("\nThe program detected the following variables from the data file: ")
-    print("\tio_duration = " + str(io_duration) + "\n\tquantum = " + str(quantum) + "\n\tcontext_switch_penalty = " + str(context_switch_penalty))
+    elif run_interface == 'n':
+        print("\nThe program detected the following variables from the data file: ")
+        print("\tcontext_switch_penalty = " + str(context_switch_penalty) + "\n\tquantum = " + str(quantum) + "\n\tio_duration = " + str(io_duration))
 
     print("\nThe keys of the processes passed in are: ")
     for elem in processes:
