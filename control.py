@@ -28,7 +28,10 @@ def control_script():
             PCB_obj.update()
 
         elif action == 'print':
-            PCB_obj.print_active_processes()
+            try:
+                PCB_obj.print_active_processes()
+            except AttributeError:
+                print("\nThe queue is currently empty of processes")
 
         elif action == 'schedule':
             PCB_obj = rrValues(PCB_obj.getProcesses())
