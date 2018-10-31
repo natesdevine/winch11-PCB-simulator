@@ -34,8 +34,19 @@ def control_script():
                 print("\nThe queue is currently empty of processes")
 
         elif action == 'schedule':
+
             queue_list_copy = PCB_obj.getProcesses()[:]
-            PCB_obj = rrValues(queue_list_copy)
+
+            #determine if user needs to be prompted for io_duration, quantum and context_switch_penalty
+            if PCB_obj.schedule_values_exist() == True:
+                run_interface = 'n'
+                io_duration, quantum, context_switch_penalty = PCB_obj.getScheduleValues()
+                PCB_obj = rrValues(queue_list_copy, run_interface, io_duration, quantum, context_switch_penalty)
+            else:
+                run_interface = 'y'
+                PCB_obj = rrValues(queue_list_copy, run_interface)
+            
+
 
         elif action == 'finish':
             print("Smell ya later")

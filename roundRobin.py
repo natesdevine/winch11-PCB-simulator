@@ -152,20 +152,24 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
 
     print(current_time, "finished", sep="\t")
 
-def rrValues(processes):
-    print("\nPlease enter schedule values")
-    
-    io_duration = input("\nIO duration: ")
-    while not int_check(io_duration):
-        io_duration = input("IO duration: ")
-    
-    quantum = input("\nquantum: ")
-    while not int_check(quantum):
-        quantum = input("quantum: ")
+def rrValues(processes, run_interface, io_duration = None, quantum = None, context_switch_penalty = None):
+    if run_interface == 'y':
+        print("\nPlease enter schedule values")
+        
+        io_duration = input("\nIO duration: ")
+        while not int_check(io_duration):
+            io_duration = input("IO duration: ")
+        
+        quantum = input("\nquantum: ")
+        while not int_check(quantum):
+            quantum = input("quantum: ")
 
-    context_switch_penalty = input("\ncontext switch penalty: ")
-    while not int_check(context_switch_penalty):
-        context_switch_penalty = input("context switch penalty: ")
+        context_switch_penalty = input("\ncontext switch penalty: ")
+        while not int_check(context_switch_penalty):
+            context_switch_penalty = input("context switch penalty: ")
+
+    print("\nThe program detected the following variables from the data file: ")
+    print("\tio_duration = " + str(io_duration) + "\n\tquantum = " + str(quantum) + "\n\tcontext_switch_penalty = " + str(context_switch_penalty))
 
     print("\nThe processes passed in are: ")
     for elem in processes:

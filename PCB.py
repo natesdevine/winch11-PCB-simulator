@@ -68,12 +68,20 @@ class PCB(object):
     def __init__(self, processes = []):
         self.processes = processes
         self.PCBqueue = queue.Queue()
-        self.readFile()
-
+        
         self.context_switch_penalty = None
         self.quantum = None
         self.io_duration = None
 
+        self.readFile()
+
+    def schedule_values_exist(self):
+        var1, var2, var3 = self.getScheduleValues()
+
+        if var1 is not None and var2 is not None and var3 is not None:
+            return True
+        else:
+            return False
 
     def getScheduleValues(self):
         return (self.context_switch_penalty, self.quantum, self.io_duration)
@@ -147,10 +155,8 @@ class PCB(object):
         
         if value[0] == params[0]:
             self.context_switch_penalty = value[1]
-
         elif value[0] == params[1]:
             self.quantum = value[1]
-        
         elif value[0] == params[2]:
             self.io_duration = value[1]
         else:
@@ -176,7 +182,7 @@ class PCB(object):
 
                         if len(x) == 1:
                             x = "".join(x)
-                            self.catchParams(x)   
+                            self.catchParams(x)
                             # try:
                             #     print("Contxt", self.context_switch_penalty, "quant", self.quantum, "ioduration", self.io_duration)                            
                             # except AttributeError as e:
@@ -198,7 +204,6 @@ class PCB(object):
 
                         except IndexError as e:
                             print(e)
-                            
                             print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
                             continue
                             
