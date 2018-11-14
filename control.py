@@ -36,19 +36,19 @@ def control_script():
 
             queue_list_copy = PCB_obj.getProcesses()[:]
 
-            #determine if user needs to be prompted for io_duration, quantum and context_switch_penalty
+            #load any data the program reads in from text file
             if PCB_obj.schedule_values_exist() == True:
-                run_interface = 'n'
                 context_switch_penalty, quantum, io_duration = PCB_obj.getScheduleValues()
-                schedule = get_values(queue_list_copy, run_interface, context_switch_penalty, quantum, io_duration)
-            else:
-                run_interface = 'y'
-                schedule = get_values(queue_list_copy, run_interface)
             
-            if schedule == 'fcfs' or schedule == 'rr' or schedule == 'srt':
-                PCB_obj.empty()
-                PCB_obj.readFile(forced_rerun = 'yeet')
-                # PCB_obj.printQueue()
+            schedule = get_values(queue_list_copy, context_switch_penalty, quantum, io_duration)
+            
+            PCB_obj.empty()
+            PCB_obj.readFile(forced_rerun = 'yeet')
+            
+            print("TEST -- forced readfile")
+            PCB_obj.printList()
+            PCB_obj.printQueue()    
+            print("TEST END-- forced readfile")
 
         elif action == 'read':
             if PCB_obj.isEmpty():

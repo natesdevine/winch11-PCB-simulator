@@ -480,7 +480,7 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
 
 
 
-def get_values(processes, run_interface, context_switch_penalty = None, quantum = None, io_duration = None):
+def get_values(processes, context_switch_penalty = None, quantum = None, io_duration = None):
     rr_required_vars = {'io_duration':io_duration, 'quantum': quantum, 'context_switch_penalty':context_switch_penalty}
     other_required_vars = {'io_duration':io_duration, 'context_switch_penalty':context_switch_penalty}
 
