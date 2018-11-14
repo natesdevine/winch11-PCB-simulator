@@ -15,6 +15,10 @@ def type_check(processes, parameters, show_errors = 'yeet'):
         return False
     return True
 
+def pass_the_blunts():
+    pass
+
+
 def time_check(parameter, show_errors = 'yeet'):
     if ":" not in parameter:
         return False
