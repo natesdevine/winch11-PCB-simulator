@@ -2,36 +2,13 @@ from PCB_utils import *
 from control import *
 from PCB import *
 
-##Implementation:
-##1- Traverse until all process gets completely
-##   executed.
-##   a) Find process with minimum remaining time at
-##     every single time lap.
-##   b) Reduce its time by 1.
-##   c) Check if its remaining time becomes 0 
-##   d) Increment the counter of process completion.
-##   e) Completion time of current process = 
-##     current_time +1;
-##   e) Calculate waiting time for each completed 
-##     process.
-##   wt[i]= Completion time - arrival_time-burst_time
-##   f)Increment time lap by one.
-##2- Find turnaround time (waiting_time+burst_time).
-##bt = quantum
-##
-##
 def SRT(processes, io_duration, context_switch_penalty):
-
-    #not passing in correct quantum, context_switch_pentaly and io_duration on
-    #automatic reading of files
-    
     #processes is a list of all processes
     processes.sort(key=sort_service_time) 
     #create empty queue
     process_queue=queue.Queue()
     #time variable, process in processes
     t,i=0,0
-    #q=quantum
     current_process=None
     not_beginning=False
 
