@@ -202,7 +202,6 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
             # serve the front process
             front.service_time = int(front.service_time)-1
             front.io_counter= int(front.io_counter)-1
-            current_time += 1
             print(current_time, "running process"+str(front.key), sep="\t")
             
             # check for io event
