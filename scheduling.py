@@ -4,7 +4,7 @@ from PCB import *
 from error_checks import *
 import sys
 
-def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
+def round_robin(processes,io_duration, quantum, context_switch_penalty):
 
     #not passing in correct quantum, context_switch_pentaly and io_duration on
     #automatic reading of files
@@ -131,7 +131,7 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
     print("Throughput: ",throughput)
 
 #First come first serve
-def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
+def first_come_first_serve(processes, io_duration, context_switch_penalty):
     
     processes.sort(key=sort_time_available)
     process_queue=queue.Queue()
@@ -221,7 +221,7 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
             
         current_time+=1
         
-    print(current_time, "finished", sep="\t")
+    print(current_time-1, "finished", sep="\t")
 
     for elem in start_dic:
         turnaround_list.append(end_dic[elem]-start_dic[elem])
@@ -234,11 +234,9 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
     throughput=throughput/(current_time-1)
     print("Throughput: ",throughput)
     
-def SRT(processes, io_duration, context_switch_penalty):
+def shortest_remaining_time(processes, io_duration, context_switch_penalty):
     #processes is a list of all processes
-    processes.sort(key=sort_service_time) 
-    #create empty queue
-    process_queue=queue.Queue()
+    processes.sort(key=sort_time_available) 
     #time variable, process in processes
     t,i=0,0
     current_process=None
@@ -248,7 +246,8 @@ def SRT(processes, io_duration, context_switch_penalty):
     io_happening=[]
     #a queue for processes with io events finished
     io_finished_queue=queue.Queue()
-
+    #list to hold current processes
+    process_queue_list = []
     #calculate throughput
     throughput=len(processes)
 
@@ -260,35 +259,37 @@ def SRT(processes, io_duration, context_switch_penalty):
     
 
     #while loop to run until processes complete
-    while not(not_beginning and process_queue.empty() and io_finished_queue.empty() and io_happening==[] and current_process==None):
+    while not(not_beginning and len(process_queue_list)==0 and io_finished_queue.empty() and io_happening==[] and current_process==None):
         #add processes to queue if they become available
         print('t',t)
         while i<len(processes) and int(processes[i].arrival_time)<=t:
             #initializion for each process
             start_dic[processes[i].key]=t
-            process_queue.put(processes[i])
+            process_queue_list.append(processes[i])
             i+=1
             not_beginning=True
             print("i",i)
-        process_queue_list = list(process_queue.queue)
+
         process_queue_list.sort(key=sort_service_time)
             
         #get a new process if there is none, set up all variables needed
-        if current_process==None and not (process_queue.empty() and io_finished_queue.empty()):
+        if current_process==None and not(len(process_queue_list)==0 and io_finished_queue.empty()):
             #use a process that finished it's io if there are any waiting
             if not io_finished_queue.empty():
                 t+=context_switch_penalty
                 current_process=io_finished_queue.get()
             else:
                 t+=context_switch_penalty
-                current_process=process_queue.get()
+                current_process=process_queue_list[0]
+                process_queue_list.pop(0)
             #print('got process', current_process.key)
             #print(current_process.io_counter,current_process.io_freq, current_process.io_running)
 
 
         if current_process !=None and not process_queue_list == [] and (int(current_process.service_time) > int(process_queue_list[0].service_time)):
-            process_queue.put(current_process)
-            current_process == process_queue.get()
+            process_queue_list.append(current_process)
+            current_process = process_queue_list[0]
+            process_queue_list.pop(0)
             t+=context_switch_penalty
 
         #for each process with an io event running, decrement the length of time to completion
@@ -319,7 +320,8 @@ def SRT(processes, io_duration, context_switch_penalty):
                     current_process=io_finished_queue.get()
                 elif not process_queue.empty():
                     t+=context_switch_penalty
-                    current_process=process_queue.get()
+                    current_process=process_queue_list[0]
+                    process_queue_list.pop(0)
         if current_process!=None:          
             #run current process
             print('program running', current_process.key, int(current_process.service_time) -1, "clocks left")
@@ -352,26 +354,19 @@ def SRT(processes, io_duration, context_switch_penalty):
     print("Throughput: ",throughput)
 
 def shortest_process_next(processes, io_duration, context_switch_penalty):
-    
-    processes.sort(key=sort_time_available)
-    process_queue=queue.Queue()
-    for i in processes:
-        process_queue.put(i)
-    
-    if process_queue.empty():
-        print("No process to schedule")
-        return
+   #processes is a list of all processes
+    processes.sort(key=sort_time_available) 
+    #time variable, process in processes
+    t,i=0,0
+    current_process=None
+    not_beginning=False
 
-    print("TIME","STATUS/PROCESS", sep="\t")
-    current_time = 0
-
-    front=None
-    
     #a list for processes with io events happening
     io_happening=[]
     #a queue for processes with io events finished
     io_finished_queue=queue.Queue()
-    
+    #list to hold current processes
+    process_queue_list = []
     #calculate throughput
     throughput=len(processes)
 
@@ -380,53 +375,36 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
     turnaround_list=[]
     start_dic={}
     end_dic={}
-    for i in processes:
-        start_dic[i.key]=int(i.arrival_time)
-        
+    
 
-    while not (process_queue.empty() and io_finished_queue.empty() and io_happening==[] and front==None):
+    #while loop to run until processes complete
+    while not(not_beginning and len(process_queue_list)==0 and io_finished_queue.empty() and io_happening==[] and current_process==None):
+        #add processes to queue if they become available
+        print('t',t)
+        while i<len(processes) and int(processes[i].arrival_time)<=t:
+            #initializion for each process
+            start_dic[processes[i].key]=t
+            process_queue_list.append(processes[i])
+            i+=1
+            not_beginning=True
+            print("i",i)
 
-        process_list = list(process_queue.queue)
-
-        processes_arrived = []
-        processes_not_arrived = []
-
-        #adds all processes that have arrived after every iteration of the loop
-        for i in process_list:
-            if int(i.get_arrival_time()) <= current_time:
-                processes_arrived.append(i)
-            else:
-                processes_not_arrived.append(i)
-
-        #for i in processes_arrived:
-            #print()
-            #print("service time", i.getServiceTime(), type(i.getServiceTime()))
-        processes_arrived.sort(key=sort_service_time)
-
-        #add sorted processes arrived followed by processes not arrived back into queue
-        for i in processes_arrived:
-            process_queue.put(i)
-
-
-        # serve the process at front of the io queue, then the process queue
-        if front==None:
-            if not io_finished_queue.empty():
-                current_time += context_switch_penalty
-                front = io_finished_queue.get()
+        process_queue_list.sort(key=sort_service_time)
             
-            elif not process_queue.empty():
-                current_time += context_switch_penalty
-                front = process_queue.get()
+        #get a new process if there is none, set up all variables needed
+        if current_process==None and not(len(process_queue_list)==0 and io_finished_queue.empty()):
+            #use a process that finished it's io if there are any waiting
+            if not io_finished_queue.empty():
+                t+=context_switch_penalty
+                current_process=io_finished_queue.get()
+            else:
+                t+=context_switch_penalty
+                current_process=process_queue_list[0]
+                process_queue_list.pop(0)
+            #print('got process', current_process.key)
+            #print(current_process.io_counter,current_process.io_freq, current_process.io_running)
 
-        # the system is idle until the process arrives
-        if front!=None:
-            if current_time < int(front.arrival_time):
-                print(current_time, "idle", sep="\t")
-
-            while (current_time < int(front.arrival_time)):
-                current_time += 1
-
-        #run io events
+        #for each process with an io event running, decrement the length of time to completion
         if io_happening!=[]:
             for process in io_happening:
                 print('io running', int(process.io_counter) -1, "clocks left")
@@ -436,37 +414,46 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
                     process.io_counter=process.io_freq
                     io_finished_queue.put(process)
                     io_happening.remove(process)
-                    
-        # run program for one iteration
-        if front!=None:
-            # serve the front process
-            front.service_time = int(front.service_time)-1
-            front.io_counter= int(front.io_counter)-1
-            current_time += 1
-            print(current_time, "running process"+str(front.key), sep="\t")
-            
-            # check for io event
-            if (int(front.io_freq) > 0 and front.service_time > 0 and front.io_counter==0):
-                current_time += context_switch_penalty
+                        
+        #run current process for 1 time unit
+        if current_process!=None:
+            print("current Process", current_process.key)
+            #if io_counter is 0 then either an io event is ending or an io event should start
+            #if io_running is True then the io event should end, if it is False an event should begin
+            if current_process.io_counter==0 and current_process.io_freq!=0:
+                print("io event starting")
+                io_happening.append(current_process)
+                current_process.io_counter=io_duration
+                current_process=None
+                #get a new process
+                #use a process that finished it's io if there are any waiting
+                if not io_finished_queue.empty():
+                    t+=context_switch_penalty
+                    current_process=io_finished_queue.get()
+                elif not process_queue.empty():
+                    t+=context_switch_penalty
+                    current_process=process_queue_list[0]
+                    process_queue_list.pop(0)
+        if current_process!=None:          
+            #run current process
+            print('program running', current_process.key, int(current_process.service_time) -1, "clocks left")
+            current_process.service_time=int(current_process.service_time)-1
+            current_process.io_counter=int(current_process.io_counter)-1
+            #one time unit was used on either the io event or the current process
 
-                # announce io event
-                print(current_time, "io", sep="\t")
-                front.io_counter=io_duration
-                io_happening.append(front)
-                front=None
-
-        if front!=None and front.service_time==0:
-            print(current_time, "process "+str(front.key)+" has finished", sep="\t")
-            #for turnaround
-            end_dic[str(front.key)]=current_time
-            # switch to either idle or the next process
-            current_time += context_switch_penalty
-            front=None
-            
-        current_time+=1
+                
+            #if process ends, remove it, and reset all relevant variables, adn add
+            #contact switch penalty
+            if current_process !=None and current_process.service_time==0:
+                end_dic[current_process.key]=t
+                print(current_process.key, 'is done')
+                t+=context_switch_penalty
+                current_process=None
+                
+        #increment time at each iteration
+        print('\n')
+        t+=1
         
-    print(current_time, "finished", sep="\t")
-
     for elem in start_dic:
         turnaround_list.append(end_dic[elem]-start_dic[elem])
     for i in turnaround_list:
@@ -475,9 +462,8 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
     turnaround_time=turnaround_time/throughput
     print("Average Turnaround Time: ",turnaround_time)
     
-    throughput=throughput/(current_time-1)
+    throughput=throughput/(t-1)
     print("Throughput: ",throughput)
-
 
 
 def get_values(processes, context_switch_penalty = None, quantum = None, io_duration = None):
@@ -491,7 +477,7 @@ def get_values(processes, context_switch_penalty = None, quantum = None, io_dura
         required_vars = get_required_vals(rr_required_vars)  
         final_vars = should_update_value(required_vars)
         io_duration, quantum, context_switch_penalty = unpack(required_vars)
-        RoundRobin(processes, io_duration, quantum, context_switch_penalty)
+        round_robin(processes, io_duration, quantum, context_switch_penalty)
         return 'rr'
 
     else:
@@ -500,11 +486,11 @@ def get_values(processes, context_switch_penalty = None, quantum = None, io_dura
         io_duration, context_switch_penalty = unpack(final_vars)
 
         if ans == 'fcfs':    
-            FirstComeFirstServe(processes, io_duration, context_switch_penalty)
+            first_come_first_serve(processes, io_duration, context_switch_penalty)
             return 'fcfs'
 
         elif ans == 'srt':
-            SRT(processes,io_duration, context_switch_penalty)
+            shortest_remaining_time(processes,io_duration, context_switch_penalty)
             return 'srt'
 
         elif ans == 'spn':
