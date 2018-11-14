@@ -1,6 +1,7 @@
 Context Switch Penalty = 0
 Quantum = 2
 I/O Duration = 5
+
 1,True,1,2,True,6,3
 2,True,1,3,True,7,0
 3,True,1,3,True,4,5

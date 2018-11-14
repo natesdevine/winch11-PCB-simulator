@@ -1,7 +1,7 @@
 from PCB import *
 from PCB_utils import *
-# from scheduling import *
-from roundRobin import *
+from scheduling import *
+from ShortestRemainingTime import *
 import sys
 
 #Gets the desired menu from the user and checks if it is a valid choice
@@ -47,16 +47,6 @@ def control_script():
                 schedule = rrValues(queue_list_copy, run_interface)
             
             if schedule == 'fcfs' or schedule == 'rr':
-                # print("\nFORCED RERUN\n")
-                
-                # print("TEST BEFORE")
-                # PCB_obj.printQueue()
-                
-                
-                # print("\nTEST AFTER")
-                # PCB_obj.printQueue()
-                
-                # print("\nAFTER FORCED RERUN")
                 PCB_obj.empty()
                 PCB_obj.readFile(forced_rerun = 'yeet')
                 # PCB_obj.printQueue()
