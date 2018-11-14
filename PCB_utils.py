@@ -136,7 +136,7 @@ def inputIOCounter():
 
 
 
-def str_verify(question, correct_ans, lower = None, upper = None):
+def str_verify(question, correct_ans, lower = None, upper = None, multiple = None):
     accepted = correct_ans.split(',')
     
     if lower is not None:
@@ -146,16 +146,33 @@ def str_verify(question, correct_ans, lower = None, upper = None):
     else:
         ans = input(question).replace(' ', '')
 
-    while ans not in accepted:
+    
+    if multiple is None:
+        ans = check_acceptable_answers(accepted, question, ans, lower, upper)
+        return ans
+    
+    elif multiple is not None:
+        final_ans = ''
+        answers = ans.split(',')
+
+        for answer in answers:
+            if answer == ' ':
+                continue
+            ans = check_acceptable_answers(accepted, question, answer, lower, upper)
+            final_ans+= ans+','
+        return final_ans
+
+def check_acceptable_answers(accepted_answers, question, user_answer, lower, upper):
+    while user_answer not in accepted_answers:
         if lower is not None:
-            ans = input("Inavalid input. " + question).lower().replace(' ', '')
+            user_answer = input("Inavalid input. " + question).lower().replace(' ', '')
         elif upper is not None:
-            ans = input("Inavalid input. " + question).upper().replace(' ', '')
+            user_answer = input("Inavalid input. " + question).upper().replace(' ', '')
         else:
-            ans = input(question).replace(' ', '')
-    return ans
-    
-    
+            user_answer = input(question).replace(' ', '')
+    return user_answer    
+
+
 #cheeky sort function for use in scheduling algs
 def sort_time_available(process):
     return process.arrival_time

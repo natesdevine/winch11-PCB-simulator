@@ -2,6 +2,7 @@ from PCB_utils import *
 from control import *
 from PCB import *
 from ShortestRemainingTime import *
+from error_checks import *
 import sys
 
 def sort_time_available(process):
@@ -489,15 +490,15 @@ def get_values(processes, run_interface, context_switch_penalty = None, quantum 
 
     if ans == 'rr':
         required_vars = get_required_vals(rr_required_vars)  
-        
+        final_vars = should_update_value(required_vars)
         io_duration, quantum, context_switch_penalty = unpack(required_vars)
         RoundRobin(processes, io_duration, quantum, context_switch_penalty)
         return 'rr'
 
     else:
         required_vars = get_required_vals(other_required_vars)
-        # required_vars = should_update_va lue(required_vars)
-        io_duration, context_switch_penalty = unpack(required_vars)
+        final_vars = should_update_value(required_vars)
+        io_duration, context_switch_penalty = unpack(final_vars)
 
         if ans == 'fcfs':    
             FirstComeFirstServe(processes, io_duration, context_switch_penalty)
@@ -511,16 +512,16 @@ def get_values(processes, run_interface, context_switch_penalty = None, quantum 
             shortest_process_next(processes, io_duration, context_switch_penalty)
             return 'spn' 
 
-def get_required_vals(required_vars):
+def get_required_vals(required_vars, *args):
     for variable in required_vars:
         min_num = 1
         
-        if required_vars.get(variable) is None:
+        if required_vars.get(variable) is None or args == 'update':
             
             if variable == 'context_switch_penalty':
                 min_num = 0
 
-            new_value = int_check("ENTER A VALUE FOR " + str(variable) +": ", min_num)
+            new_value = int_check("Please enter a value for " + str(variable) +": ", min_num)
             required_vars[variable] = new_value
 
         elif isinstance(required_vars.get(variable), str):
@@ -536,82 +537,45 @@ def unpack(required_vars):
     else:
         return required_vars.get('io_duration'), required_vars.get('quantum'), required_vars.get('context_switch_penalty')
 
-
-def int_check(question, min_num = None, max_num = None):
-    print("WHAT")
-    if min_num is not None and max_num is not None:
-        return second_case(question, min_num, max_num)
-    elif min_num is not None or max_num is not None:
-        if min_num is not None:
-            return first_case(question, 'min', min_num)
-        else:
-            return first_case(question, 'max', max_num)     
-    else:
-        return base_case(question)
-                
-def base_case(question):
-    while True:
-        try:
-            ans = int(input(question))
-        except ValueError:
-            print("Invalid input.")
-    return ans
-
-def first_case(question, test_case, bound):
-    while True:
-        try:
-            ans = int(input(question))
-            
-            #a min check must be run
-            if test_case == 'min':
-                #answer must be greater than lower bound    
-                if ans >= bound:
-                    return ans
-                else:
-                    print("Invalid input.") 
-
-            #a max check must be run
-            else:
-                if ans <= bound:
-                    return ans
-                else:
-                    print("Invalid input.")
-        
-        except ValueError:
-            print("Invalid input.")
-    
-    return ans  
-
-def second_case(question, min_num, max_num):
-    while True:
-        try:
-            ans = int(input(question))
-            if min_check(ans, min_num) and max_check(ans, max_num):
-                break
-            else:
-                print("Invalid input.")
-        except ValueError:
-            print("Invalid input.")
-    return ans
-
-
 def should_update_value(required_vars):
     names = [variable for variable in required_vars]
     
-    print("Confirm the following variables below:")
+    print("\nConfirm the following variables below:")
     for name in names:
-        print(name, required_vars.get(name))
+        print("\t"+name+":", required_vars.get(name))
     
-    print("To edit any variables, enter in the variable names seperated by commas")
+    print("\nTo edit any variables, enter in the variable names seperated by commas")
     print('OR')
-    print("Enter \'No\'' to skip this step")
+    print("Enter \'No\' to skip this step\n")
 
-    print(getdemcommas(names))
-    ans = str_verify("Edit any of the variables: ", getdemcommas(names), lower= 'you bet')
+    ans = str_verify("Edit any of the variables: ", getdemcommas(names), lower= 'you bet',multiple = "yeet")
+
+    if ans == 'no,':
+        return required_vars
+
+    else:
+        update_vars = ans.split(',')
+        for var in update_vars:
+            if var == '':
+                continue
+            required_vars = update_value(required_vars,var)
+        
+        print("\nThe following variables below are:")        
+        for name in names:
+            print("\t",name+":", required_vars.get(name)) 
+            print()
+
+def update_value(required_vars,var):
+    min_num = 1
+    if var == 'context_switch_penalty':
+        min_num = 0
     
+    new_value = int_check("Please enter a value for " + str(var) +": ", min_num)
+    required_vars[var] = new_value
+    return required_vars
 
 def getdemcommas(names):
-    ans = 'no'
+    ans = 'no,'
     for name in names:
         ans+=name +','
     return ans
