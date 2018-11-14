@@ -1,5 +1,4 @@
-def int_check(question, min_num = None, max_num = None, *args):
-    
+def int_check(question, min_num = None, max_num = None):
     if min_num is not None and max_num is not None:
         return second_case(question, min_num, max_num)
     elif min_num is not None or max_num is not None:
