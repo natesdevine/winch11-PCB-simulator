@@ -3,12 +3,6 @@ from control import *
 from PCB import *
 from error_checks import *
 
-def sort_time_available(process):
-    return process.arrival_time
-    
-def sort_service_time(process):
-    return process.service_time
-
 def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
 
     #not passing in correct quantum, context_switch_pentaly and io_duration on
