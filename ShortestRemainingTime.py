@@ -54,7 +54,7 @@ def SRT(processes, io_duration, context_switch_penalty):
     while not(not_beginning and process_queue.empty() and io_finished_queue.empty() and io_happening==[] and current_process==None):
         #add processes to queue if they become available
         print('t',t)
-        while i<len(processes) and int(processes[i].time_created)<=t:
+        while i<len(processes) and int(processes[i].arrival_time)<=t:
             #initializion for each process
             start_dic[processes[i].key]=t
             process_queue.put(processes[i])

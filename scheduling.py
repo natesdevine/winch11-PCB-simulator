@@ -36,7 +36,7 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
     while not(not_beginning and process_queue.empty() and io_finished_queue.empty() and io_happening==[] and current_process==None):
         #add processes to queue if they become available
         print('t',t)
-        while i<len(processes) and int(processes[i].time_created)<=t:
+        while i<len(processes) and int(processes[i].arrival_time)<=t:
             #initialize quantum for each process
             processes[i].quantum=quantum
             start_dic[processes[i].key]=t
@@ -130,7 +130,7 @@ def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
 
     
 def sort_time_available(process):
-    return process.time_created
+    return process.arrival_time
 
 
 #First come first serve
@@ -164,7 +164,7 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
     start_dic={}
     end_dic={}
     for i in processes:
-        start_dic[i.key]=int(i.time_created)
+        start_dic[i.key]=int(i.arrival_time)
         
 
     while not (process_queue.empty() and io_finished_queue.empty() and io_happening==[] and front==None):
@@ -180,10 +180,10 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
 
         # the system is idle until the process arrives
         if front!=None:
-            if current_time < int(front.time_created):
+            if current_time < int(front.arrival_time):
                 print(current_time, "idle", sep="\t")
 
-            while (current_time < int(front.time_created)):
+            while (current_time < int(front.arrival_time)):
                 current_time += 1
 
         #run io events
