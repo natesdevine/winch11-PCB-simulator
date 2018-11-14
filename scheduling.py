@@ -1,7 +1,6 @@
 from PCB_utils import *
 from control import *
 from PCB import *
-from ShortestRemainingTime import *
 import sys
 
 def sort_time_available(process):
