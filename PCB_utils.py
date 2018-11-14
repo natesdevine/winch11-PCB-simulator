@@ -178,5 +178,5 @@ def sort_time_available(process):
     return process.arrival_time
     
 def sort_service_time(process):
-    return process.service_time
+    return int(process.getServiceTime())
 

@@ -1,15 +1,8 @@
 from PCB_utils import *
 from control import *
 from PCB import *
-from ShortestRemainingTime import *
 from error_checks import *
 import sys
-
-def sort_time_available(process):
-    return process.arrival_time
-    
-def sort_service_time(process):
-    return process.service_time
 
 def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
 
@@ -400,11 +393,20 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
 
         #adds all processes that have arrived after every iteration of the loop
         for i in process_list:
-            if int(i.getTimeCreated()) >= current_time:
+            if int(i.get_arrival_time()) <= current_time:
                 processes_arrived.append(i)
             else:
                 processes_not_arrived.append(i)
+
+        #for i in processes_arrived:
+            #print()
+            #print("service time", i.getServiceTime(), type(i.getServiceTime()))
         processes_arrived.sort(key=sort_service_time)
+
+        #add sorted processes arrived followed by processes not arrived back into queue
+        for i in processes_arrived:
+            process_queue.put(i)
+
 
         # serve the process at front of the io queue, then the process queue
         if front==None:
@@ -462,9 +464,6 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
             front=None
             
         current_time+=1
-        processes_arrived = []
-        processes_not_arrived = []
-        process_list = []
         
     print(current_time, "finished", sep="\t")
 
@@ -485,7 +484,7 @@ def get_values(processes, run_interface, context_switch_penalty = None, quantum 
     rr_required_vars = {'io_duration':io_duration, 'quantum': quantum, 'context_switch_penalty':context_switch_penalty}
     other_required_vars = {'io_duration':io_duration, 'context_switch_penalty':context_switch_penalty}
 
-    print("\nType:\n\t\"rr\" to schedule using Round Robin\n\t\"fcfs\" to schedule using First Come First Serve\n\t\"SRT\" to schedule using Shortest Remaining Time\n\t\"SPN\" to schedule using Shortest Process Next")
+    print("\nType:\n\t\"rr\" to schedule using Round Robin\n\t\"fcfs\" to schedule using First Come First Serve\n\t\"srt\" to schedule using Shortest Remaining Time\n\t\"spn\" to schedule using Shortest Process Next")
     ans = str_verify("\nI choose: ", "rr,fcfs,srt,spn", lower = 'uh huh')
 
     if ans == 'rr':
