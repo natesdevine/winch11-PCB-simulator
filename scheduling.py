@@ -354,7 +354,7 @@ def get_values(processes, run_interface, context_switch_penalty = None, quantum 
     rr_required_vars = {'io_duration':io_duration, 'quantum': quantum, 'context_switch_penalty':context_switch_penalty}
     other_required_vars = {'io_duration':io_duration, 'context_switch_penalty':context_switch_penalty}
 
-    print("\nType:\n\t\"rr\" to schedule using Round Robin\n\t\"fcfs\" to schedule using First Come First Serve\n\t\"SRT\" to schedule using Shortest Remaining Time\n\t\"SPN\" to schedule using Shortest Process Next")
+    print("\nType:\n\t\"rr\" to schedule using Round Robin\n\t\"fcfs\" to schedule using First Come First Serve\n\t\"srt\" to schedule using Shortest Remaining Time\n\t\"spn\" to schedule using Shortest Process Next")
     ans = str_verify("\nI choose: ", "rr,fcfs,srt,spn", lower = 'uh huh')
 
     if ans == 'rr':
@@ -366,7 +366,6 @@ def get_values(processes, run_interface, context_switch_penalty = None, quantum 
 
     else:
         required_vars = get_required_vals(other_required_vars)
-        required_vars = 
         io_duration, context_switch_penalty = unpack(required_vars)
     
         if ans == 'fcfs':    
@@ -374,7 +373,8 @@ def get_values(processes, run_interface, context_switch_penalty = None, quantum 
             return 'fcfs'
 
         elif ans == 'srt':
-            pass
+            SRT(processes, io_duration, context_switch_penalty)
+            return "srt"
 
         elif ans == 'spn':
             pass        
