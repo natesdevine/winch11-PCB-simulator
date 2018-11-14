@@ -4,11 +4,11 @@ from PCB_utils import *
 class Process(object):
 
     #instance variables for process
-    def __init__(self, key, active, priority, time_created, mode, service_time, io_freq):
+    def __init__(self, key, active, priority, arrival_time, mode, service_time, io_freq):
         self.key = key
         self.active = active
         self.priority = priority
-        self.time_created = time_created
+        self.arrival_time = arrival_time
         self.mode = mode
         self.service_time = service_time
         self.io_freq, self.io_counter = io_freq, io_freq
@@ -21,8 +21,8 @@ class Process(object):
     def getPriority(self):
         return self.priority
 
-    def getTimeCreated(self):
-        return self.time_created
+    def get_arrival_time(self):
+        return self.arrival_time
 
     def getMode(self):
         return self.mode
@@ -40,13 +40,13 @@ class Process(object):
         return self.io_counter
 
     def print_vals(self):
-        print(self.key, self.active, self.priority, self.time_created, self.mode, self.service_time, self.io_freq, self.io_counter)       
+        print(self.key, self.active, self.priority, self.arrival_time, self.mode, self.service_time, self.io_freq, self.io_counter)       
 
     def setPriority(self, newPriority):
         self.priority = newPriority
 
-    def setTimeCreated(self, newtime_created):
-        self.time_created = newtime_created
+    def set_arrival_time(self, new_arrival_time):
+        self.arrival_time = new_arrival_time
 
     def setMode(self, newMode):
         self.mode = newMode
@@ -116,7 +116,7 @@ class PCB(object):
         print("\n" + word + ' process queue: ')    
 
         for elem in list(self.PCBqueue.queue):
-            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.getTimeCreated() + ", Service Time: " + str(elem.getServiceTime()) + ", IO Freq: " + str(elem.getIOFreq()))
+            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.get_arrival_time() + ", Service Time: " + str(elem.getServiceTime()) + ", IO Freq: " + str(elem.getIOFreq()))
 
     def printList(self):
         for elem in self.processes:
@@ -144,7 +144,7 @@ class PCB(object):
 
         print("Key: ", someProcess.getKey())
         print("Priority: ", someProcess.getPriority())
-        print("Arrival Time: ", someProcess.getTimeCreated())
+        print("Arrival Time: ", someProcess.get_arrival_time())
         print("Service Time: ", someProcess.getServiceTime())
         print("User Mode: ", someProcess.getMode())
         print("isActive: ", someProcess.isActive())
@@ -330,7 +330,7 @@ class PCB(object):
             newProcessValues = self.updateProcessInfo()
 
             self.processes[existingProcessIndex].setPriority(newProcessValues[0])
-            self.processes[existingProcessIndex].setTimeCreated(newProcessValues[1])
+            self.processes[existingProcessIndex].get_arrival_time(newProcessValues[1])
             self.processes[existingProcessIndex].setMode(newProcessValues[2])
             self.processes[existingProcessIndex].setActive(newProcessValues[3])
             self.processes[existingProcessIndex].setServiceTime(newProcessValues[4])
