@@ -41,10 +41,10 @@ def control_script():
             if PCB_obj.schedule_values_exist() == True:
                 run_interface = 'n'
                 context_switch_penalty, quantum, io_duration = PCB_obj.getScheduleValues()
-                schedule = rrValues(queue_list_copy, run_interface, context_switch_penalty, quantum, io_duration)
+                schedule = get_values(queue_list_copy, run_interface, context_switch_penalty, quantum, io_duration)
             else:
                 run_interface = 'y'
-                schedule = rrValues(queue_list_copy, run_interface)
+                schedule = get_values(queue_list_copy, run_interface)
             
             if schedule == 'fcfs' or schedule == 'rr':
                 PCB_obj.empty()

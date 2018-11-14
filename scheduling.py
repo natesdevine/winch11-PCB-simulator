@@ -1,6 +1,7 @@
 from PCB_utils import *
 from control import *
 from PCB import *
+from error_checks import *
 
 def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
 
@@ -238,36 +239,70 @@ def FirstComeFirstServe(processes, io_duration, context_switch_penalty):
     throughput=throughput/(current_time-1)
     print("Throughput: ",throughput)
 
-def rrValues(processes, run_interface, context_switch_penalty = None, quantum = None, io_duration = None):
-    if run_interface == 'y':
-        print("\nThe data file didn't contain critical values: IO Duration, Quantum, Context Switch Penalty")
-        print("\nPlease enter those values below")
-        
-        io_duration = input("IO duration: ")
-        while not int_check(io_duration):
-            io_duration = input("IO duration: ")
-        
-        quantum = input("quantum: ")
-        while not int_check(quantum):
-            quantum = input("quantum: ")
+def get_values(processes, run_interface, context_switch_penalty = None, quantum = None, io_duration = None):
+    rr_required_vars = {'io_duration':io_duration, 'quantum': quantum, 'context_switch_penalty':context_switch_penalty}
+    other_required_vars = {'io_duration':io_duration, 'context_switch_penalty':context_switch_penalty}
 
-        context_switch_penalty = input("context switch penalty: ")
-        while not int_check(context_switch_penalty):
-            context_switch_penalty = input("context switch penalty: ")
+    print("\nType:\n\t\"rr\" to schedule using Round Robin\n\t\"fcfs\" to schedule using First Come First Serve\n\t\"SRT\" to schedule using Shortest Remaining Time\n\t\"SPN\" to schedule using Shortest Process Next")
+    ans = str_verify("\nI choose: ", "rr,fcfs,srt,spn", lower = 'uh huh')
 
-    print("\nThe program detected the following variables from the data file: ")
-    print("\tio_duration = " + str(io_duration) + "\n\tquantum = " + str(quantum) + "\n\tcontext_switch_penalty = " + str(context_switch_penalty))
-
-    print("\nThe keys of the processes passed in are: ")
-    for elem in processes:
-        print(elem.getKey())
-        
-    print("\nType:\n\t\"rr\" to schedule using Round Robin\n\t\"fcfs\" to schedule using First Come First Serve.")
-    ans = str_verify("\nI choose: ", "rr,fcfs", lower = 'uh huh')
     if ans == 'rr':
-        RoundRobin(processes,int(io_duration), int(quantum), int(context_switch_penalty))
+        required_vars = get_required_vals(rr_required_vars)  
+        
+        io_duration, quantum, context_switch_penalty = unpack(required_vars)
+        RoundRobin(processes, io_duration, quantum, context_switch_penalty)
         return 'rr'
-    elif ans == 'fcfs':
-        FirstComeFirstServe(processes,int(io_duration), int(context_switch_penalty))
-        return 'fcfs'
+
+    else:
+        required_vars = get_required_vals(other_required_vars)
+        required_vars = 
+        io_duration, context_switch_penalty = unpack(required_vars)
+    
+        if ans == 'fcfs':    
+            FirstComeFirstServe(processes, io_duration, context_switch_penalty)
+            return 'fcfs'
+
+        elif ans == 'srt':
+            pass
+
+        elif ans == 'spn':
+            pass        
+
+def get_required_vals(required_vars):
+    for variable in required_vars:
+        min_num = 1
+
+        if required_vars.get(variable) is None:
+            if variable == 'context_switch_penalty':
+                print("TEST")
+                min_num = 0 
+            new_value = int_check("ENTER A VALUE FOR " + str(variable) +": ", min_num = min_num)
+            required_vars[variable] = new_value
+
+        elif required_vars.get(variable) is not None and type(required_vars.get(variable)) == 'String':
+            required_vars[variable] = new_value
+
+    return required_vars
+
+
+def unpack(required_vars):
+    if len(required_vars) == 2:
+        return required_vars['io_duration'], required_vars['context_switch_penalty']
+    else:
+        return required_vars['io_duration'], required_vars['quantum'], required_vars['context_switch_penalty']
+
+
+def should_update_value(required_vars):
+    names = [variable for variable in required_vars]
+    print("Confirm the following variables below:")
+    for name in names:
+        print(name, required_vars.get(name))
+    
+    print("To edit any variables, enter in the variable names seperated by commas")
+    print('OR')
+    print("Enter \'No\'' to skip this step")
+
+    ans = str_verify("Edit any of the variables: ", )
+
+
 
