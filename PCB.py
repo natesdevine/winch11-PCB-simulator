@@ -31,7 +31,7 @@ class Process(object):
         return self.active == 'True'
 
     def getServiceTime(self):
-        return self.service_time
+        return int(self.service_time)
 
     def getIOFreq(self):
         return self.io_freq

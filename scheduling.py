@@ -3,12 +3,6 @@ from control import *
 from PCB import *
 import sys
 
-def sort_time_available(process):
-    return process.arrival_time
-    
-def sort_service_time(process):
-    return process.service_time
-
 def RoundRobin(processes,io_duration, quantum, context_switch_penalty):
 
     #not passing in correct quantum, context_switch_pentaly and io_duration on
@@ -398,11 +392,20 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
 
         #adds all processes that have arrived after every iteration of the loop
         for i in process_list:
-            if int(i.getTimeCreated()) >= current_time:
+            if int(i.get_arrival_time()) <= current_time:
                 processes_arrived.append(i)
             else:
                 processes_not_arrived.append(i)
+
+        #for i in processes_arrived:
+            #print()
+            #print("service time", i.getServiceTime(), type(i.getServiceTime()))
         processes_arrived.sort(key=sort_service_time)
+
+        #add sorted processes arrived followed by processes not arrived back into queue
+        for i in processes_arrived:
+            process_queue.put(i)
+
 
         # serve the process at front of the io queue, then the process queue
         if front==None:
@@ -460,9 +463,6 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
             front=None
             
         current_time+=1
-        processes_arrived = []
-        processes_not_arrived = []
-        process_list = []
         
     print(current_time, "finished", sep="\t")
 
