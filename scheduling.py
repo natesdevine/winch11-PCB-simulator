@@ -221,7 +221,7 @@ def first_come_first_serve(processes, io_duration, context_switch_penalty):
             
         current_time+=1
         
-    print(current_time, "finished", sep="\t")
+    print(current_time-1, "finished", sep="\t")
 
     for elem in start_dic:
         turnaround_list.append(end_dic[elem]-start_dic[elem])
@@ -261,7 +261,7 @@ def shortest_remaining_time(processes, io_duration, context_switch_penalty):
     #while loop to run until processes complete
     while not(not_beginning and len(process_queue_list)==0 and io_finished_queue.empty() and io_happening==[] and current_process==None):
         #add processes to queue if they become available
-        print('t',t,current_process)
+        print('t',t)
         while i<len(processes) and int(processes[i].arrival_time)<=t:
             #initializion for each process
             start_dic[processes[i].key]=t
@@ -291,7 +291,6 @@ def shortest_remaining_time(processes, io_duration, context_switch_penalty):
             current_process = process_queue_list[0]
             process_queue_list.pop(0)
             t+=context_switch_penalty
-            print(current_process)
 
         #for each process with an io event running, decrement the length of time to completion
         if io_happening!=[]:
@@ -381,7 +380,7 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
     #while loop to run until processes complete
     while not(not_beginning and len(process_queue_list)==0 and io_finished_queue.empty() and io_happening==[] and current_process==None):
         #add processes to queue if they become available
-        print('t',t,current_process)
+        print('t',t)
         while i<len(processes) and int(processes[i].arrival_time)<=t:
             #initializion for each process
             start_dic[processes[i].key]=t
