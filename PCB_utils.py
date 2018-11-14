@@ -154,4 +154,12 @@ def str_verify(question, correct_ans, lower = None, upper = None):
         else:
             ans = input(question).replace(' ', '')
     return ans
+    
+    
+#cheeky sort function for use in scheduling algs
+def sort_time_available(process):
+    return process.arrival_time
+    
+def sort_service_time(process):
+    return process.service_time
 

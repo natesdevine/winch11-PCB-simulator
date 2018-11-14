@@ -1,7 +1,6 @@
 from PCB import *
 from PCB_utils import *
 from scheduling import *
-from ShortestRemainingTime import *
 import sys
 
 #Gets the desired menu from the user and checks if it is a valid choice
@@ -46,7 +45,7 @@ def control_script():
                 run_interface = 'y'
                 schedule = get_values(queue_list_copy, run_interface)
             
-            if schedule == 'fcfs' or schedule == 'rr':
+            if schedule == 'fcfs' or schedule == 'rr' or schedule == 'srt':
                 PCB_obj.empty()
                 PCB_obj.readFile(forced_rerun = 'yeet')
                 # PCB_obj.printQueue()
