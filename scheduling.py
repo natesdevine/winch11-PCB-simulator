@@ -466,7 +466,7 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
     print("Throughput: ",throughput)
 
 
-def get_values(processes, run_interface, context_switch_penalty = None, quantum = None, io_duration = None):
+def get_values(processes, context_switch_penalty = None, quantum = None, io_duration = None):
     rr_required_vars = {'io_duration':io_duration, 'quantum': quantum, 'context_switch_penalty':context_switch_penalty}
     other_required_vars = {'io_duration':io_duration, 'context_switch_penalty':context_switch_penalty}
 
@@ -524,16 +524,18 @@ def unpack(required_vars):
 
 def should_update_value(required_vars):
     names = [variable for variable in required_vars]
+    endings = ['io', 'quant', 'context switch']
     
-    print("\nConfirm the following variables below:")
-    for name in names:
-        print("\t"+name+":", required_vars.get(name))
+    names_linked_endings = list(zip(names, endings))
+
+    for i,var in enumerate(names_linked_endings):
+        print("\t"+var[0]+' (' + var[1]+"):", required_vars.get(var[0]))
     
     print("\nTo edit any variables, enter in the variable names seperated by commas")
     print('OR')
     print("Enter \'No\' to skip this step\n")
 
-    ans = str_verify("Edit any of the variables: ", getdemcommas(names), lower= 'you bet',multiple = "yeet")
+    ans = str_verify("Edit any of the variables: ", getdemcommas(endings), lower= 'you bet',multiple = "yeet")
 
     if ans == 'no,':
         return required_vars
@@ -543,6 +545,7 @@ def should_update_value(required_vars):
         for var in update_vars:
             if var == '':
                 continue
+            # LINK ENDINGS TO NAMES
             required_vars = update_value(required_vars,var)
         
         print("\nThe following variables below are:")        
@@ -550,6 +553,9 @@ def should_update_value(required_vars):
             print("\t",name+":", required_vars.get(name)) 
             print()
 
+        print("Test --should update_value")
+        print(required_vars)
+        return required_vars
 def update_value(required_vars,var):
     min_num = 1
     if var == 'context_switch_penalty':

@@ -81,9 +81,11 @@ class PCB(object):
         return self.og_file_name
 
     def empty(self):
-        self.processes = []
-        self.PCBqueue = queue.Queue()
-        
+        self.processes.clear()
+    
+        with self.PCBqueue.mutex:
+            self.PCBqueue.queue.clear()
+    
         self.context_switch_penalty = None
         self.quantum = None
         self.io_duration = None        
@@ -118,7 +120,13 @@ class PCB(object):
         for elem in list(self.PCBqueue.queue):
             print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.get_arrival_time() + ", Service Time: " + str(elem.getServiceTime()) + ", IO Freq: " + str(elem.getIOFreq()))
 
-    def printList(self):
+    def printList(self, *args):
+        word = "Current"
+        if len(args) > 0:
+            word = str(args).replace("(", '').replace(')', '').replace(',', '').replace("'", '')
+            
+        print("\n" + word + ' process list: ')
+
         for elem in self.processes:
             print(elem.getKey(), elem.getPriority())
 
