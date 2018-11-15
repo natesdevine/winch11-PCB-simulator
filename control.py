@@ -45,11 +45,6 @@ def control_script():
             PCB_obj.empty()
             PCB_obj.readFile(forced_rerun = 'yeet')
             
-            print("TEST -- forced readfile")
-            PCB_obj.printList()
-            PCB_obj.printQueue()    
-            print("TEST END-- forced readfile")
-
         elif action == 'read':
             if PCB_obj.isEmpty():
                 PCB_obj.readFile()
