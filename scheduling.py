@@ -318,7 +318,7 @@ def shortest_remaining_time(processes, io_duration, context_switch_penalty):
                 if not io_finished_queue.empty():
                     t+=context_switch_penalty
                     current_process=io_finished_queue.get()
-                elif not process_queue.empty():
+                elif len(process_queue_list)!=0:
                     t+=context_switch_penalty
                     current_process=process_queue_list[0]
                     process_queue_list.pop(0)
@@ -430,7 +430,7 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
                 if not io_finished_queue.empty():
                     t+=context_switch_penalty
                     current_process=io_finished_queue.get()
-                elif not process_queue.empty():
+                elif len(process_queue_list)!=0:
                     t+=context_switch_penalty
                     current_process=process_queue_list[0]
                     process_queue_list.pop(0)
