@@ -13,6 +13,10 @@ class Process(object):
         self.service_time = service_time
         self.io_freq, self.io_counter = io_freq, io_freq
         self.io_quantum = 0
+        #Each object now had a memory requirement
+        self.memory_required = 1000
+        #keep track of completion times
+        self.completion_time = 0
 
     #standard get methods
     def getKey(self):

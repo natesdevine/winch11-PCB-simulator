@@ -4,7 +4,7 @@ from PCB import *
 from error_checks import *
 import sys
 
-def round_robin(processes,io_duration, quantum, context_switch_penalty):
+def round_robin(processes,io_duration, quantum, context_switch_penalty, total_memory):
 
     #not passing in correct quantum, context_switch_pentaly and io_duration on
     #automatic reading of files
@@ -112,6 +112,7 @@ def round_robin(processes,io_duration, quantum, context_switch_penalty):
             if current_process !=None and current_process.service_time==0:
                 end_dic[current_process.key]=t
                 print(current_process.key, 'is done')
+                current_process.completion_time=t
                 t+=context_switch_penalty
                 current_process=None
                 
@@ -131,7 +132,8 @@ def round_robin(processes,io_duration, quantum, context_switch_penalty):
     print("Throughput: ",throughput)
 
 #First come first serve
-def first_come_first_serve(processes, io_duration, context_switch_penalty):
+def first_come_first_serve(processes, io_duration, context_switch_penalty, total_memory):
+    
     
     processes.sort(key=sort_time_available)
     process_queue=queue.Queue()
@@ -216,6 +218,7 @@ def first_come_first_serve(processes, io_duration, context_switch_penalty):
             #for turnaround
             end_dic[str(front.key)]=current_time
             # switch to either idle or the next process
+            front.completion_time=t
             current_time += context_switch_penalty
             front=None
             
@@ -234,7 +237,7 @@ def first_come_first_serve(processes, io_duration, context_switch_penalty):
     throughput=throughput/(current_time-1)
     print("Throughput: ",throughput)
     
-def shortest_remaining_time(processes, io_duration, context_switch_penalty):
+def shortest_remaining_time(processes, io_duration, context_switch_penalty, total_memory):
     #processes is a list of all processes
     processes.sort(key=sort_time_available) 
     #time variable, process in processes
@@ -335,6 +338,7 @@ def shortest_remaining_time(processes, io_duration, context_switch_penalty):
             if current_process !=None and current_process.service_time==0:
                 end_dic[current_process.key]=t
                 print(current_process.key, 'is done')
+                current_process.completion_time=t
                 t+=context_switch_penalty
                 current_process=None
                 
@@ -353,7 +357,7 @@ def shortest_remaining_time(processes, io_duration, context_switch_penalty):
     throughput=throughput/(t-1)
     print("Throughput: ",throughput)
 
-def shortest_process_next(processes, io_duration, context_switch_penalty):
+def shortest_process_next(processes, io_duration, context_switch_penalty, total_memory):
    #processes is a list of all processes
     processes.sort(key=sort_time_available) 
     #time variable, process in processes
@@ -447,6 +451,7 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
             if current_process !=None and current_process.service_time==0:
                 end_dic[current_process.key]=t
                 print(current_process.key, 'is done')
+                current_process.completion_time=t
                 t+=context_switch_penalty
                 current_process=None
                 
@@ -465,10 +470,14 @@ def shortest_process_next(processes, io_duration, context_switch_penalty):
     throughput=throughput/(t-1)
     print("Throughput: ",throughput)
 
+def partition_memory():
+    #this will partition all the memory
+    pass
 
-def get_values(processes, context_switch_penalty = None, quantum = None, io_duration = None):
-    rr_required_vars = {'io_duration':io_duration, 'quantum': quantum, 'context_switch_penalty':context_switch_penalty}
-    other_required_vars = {'io_duration':io_duration, 'context_switch_penalty':context_switch_penalty}
+
+def get_values(processes, context_switch_penalty = None, quantum = None, io_duration = None, total_memory = None):
+    rr_required_vars = {'io_duration':io_duration, 'quantum': quantum, 'context_switch_penalty':context_switch_penalty, 'total_memory':total_memory}
+    other_required_vars = {'io_duration':io_duration, 'context_switch_penalty':context_switch_penalty, 'total_memory':total_memory}
 
     print("\nType:\n\t\"rr\" to schedule using Round Robin\n\t\"fcfs\" to schedule using First Come First Serve\n\t\"srt\" to schedule using Shortest Remaining Time\n\t\"spn\" to schedule using Shortest Process Next")
     ans = str_verify("\nI choose: ", "rr,fcfs,srt,spn", lower = 'uh huh')
@@ -476,25 +485,25 @@ def get_values(processes, context_switch_penalty = None, quantum = None, io_dura
     if ans == 'rr':
         required_vars = get_required_vals(rr_required_vars)  
         final_vars = should_update_value(required_vars)
-        io_duration, quantum, context_switch_penalty = unpack(required_vars)
-        round_robin(processes, io_duration, quantum, context_switch_penalty)
+        io_duration, quantum, context_switch_penalty, total_memory = unpack(required_vars)
+        round_robin(processes, io_duration, quantum, context_switch_penalty, total_memory)
         return 'rr'
 
     else:
         required_vars = get_required_vals(other_required_vars)
         final_vars = should_update_value(required_vars)
-        io_duration, context_switch_penalty = unpack(final_vars)
+        io_duration, context_switch_penalty, total_memory = unpack(final_vars)
 
         if ans == 'fcfs':    
-            first_come_first_serve(processes, io_duration, context_switch_penalty)
+            first_come_first_serve(processes, io_duration, context_switch_penalty, total_memory)
             return 'fcfs'
 
         elif ans == 'srt':
-            shortest_remaining_time(processes,io_duration, context_switch_penalty)
+            shortest_remaining_time(processes,io_duration, context_switch_penalty, total_memory)
             return 'srt'
 
         elif ans == 'spn':
-            shortest_process_next(processes, io_duration, context_switch_penalty)
+            shortest_process_next(processes, io_duration, context_switch_penalty, total_memory)
             return 'spn' 
 
 def get_required_vals(required_vars, *args):
@@ -517,10 +526,10 @@ def get_required_vals(required_vars, *args):
 
 
 def unpack(required_vars):
-    if len(required_vars) == 2:
-        return required_vars.get('io_duration'), required_vars.get('context_switch_penalty')
+    if len(required_vars) == 3:
+        return required_vars.get('io_duration'), required_vars.get('context_switch_penalty'), required_vars.get('total_memory')
     else:
-        return required_vars.get('io_duration'), required_vars.get('quantum'), required_vars.get('context_switch_penalty')
+        return required_vars.get('io_duration'), required_vars.get('quantum'), required_vars.get('context_switch_penalty'), required_vars.get('total_memory')
 
 def should_update_value(required_vars):
     names = [variable for variable in required_vars]
