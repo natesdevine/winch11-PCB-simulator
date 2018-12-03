@@ -9,7 +9,7 @@ def fileCheck(question):
 #assorted methods to validate user inputted parameters processes
 #lets add a check for negative priority
 def type_check(processes, parameters, show_errors = 'yeet'):   
-    if (len(parameters) != 7 or not bool_check(parameters[1], show_errors) or not bool_check(parameters[4], show_errors)
+    if (len(parameters) != 8 or not bool_check(parameters[1], show_errors) or not bool_check(parameters[4], show_errors)
         or not id_check(processes, parameters[0], show_errors) or not int_check(parameters[2], show_errors)
         or not int_check(parameters[3], show_errors) or not int_check(parameters[5], show_errors)):
         return False

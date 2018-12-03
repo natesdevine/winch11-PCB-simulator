@@ -4,7 +4,7 @@ from PCB_utils import *
 class Process(object):
 
     #instance variables for process
-    def __init__(self, key, active, priority, arrival_time, mode, service_time, io_freq):
+    def __init__(self, key, active, priority, arrival_time, mode, service_time, io_freq, memory_required):
         self.key = key
         self.active = active
         self.priority = priority
@@ -14,9 +14,13 @@ class Process(object):
         self.io_freq, self.io_counter = io_freq, io_freq
         self.io_quantum = 0
         #Each object now had a memory requirement
-        self.memory_required = 1000
+        self.memory_required = int(memory_required)
         #keep track of completion times
         self.completion_time = 0
+        self.location1=[]
+        self.location2=[]
+        self.when_allocated=[]
+        
 
     #standard get methods
     def getKey(self):
@@ -76,6 +80,7 @@ class PCB(object):
         self.context_switch_penalty = None
         self.quantum = None
         self.io_duration = None
+        self.total_memory = None
         self.og_file_name = None
 
         self.readFile()
@@ -179,7 +184,7 @@ class PCB(object):
         self.PCBqueue.put(process)
 
     def catchParams(self, line):
-        params = ["ContextSwitchPenalty", "Quantum", "I/ODuration"]
+        params = ["ContextSwitchPenalty", "Quantum", "I/ODuration","Total Memory"]
         
         value = line.split("=")
         
@@ -189,6 +194,9 @@ class PCB(object):
             self.quantum = value[1]
         elif value[0] == params[2]:
             self.io_duration = value[1]
+        elif value[0] == params[3]:
+            self.total_memory = value[1]
+        
         else:
             pass
             # print('nuh uh, you aint getting a value')
@@ -216,7 +224,6 @@ class PCB(object):
                         #stip other stuff too, not just r
                         i = i.rstrip().replace(' ', '')
                         x = i.split(",")
-
                         if len(x) == 1:
                             x = "".join(x)
                             self.catchParams(x)
@@ -235,7 +242,7 @@ class PCB(object):
 
                         #process is created for a given line of CSV here
                         try:
-                            newP = Process(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
+                            newP = Process(x[0], x[1], x[2], x[3], x[4], x[5], x[6],int(x[7]))
                             processList.append(newP)
                             # newP.print_vals()
                             if forced_rerun is None:
@@ -282,7 +289,7 @@ class PCB(object):
                 ans = str_verify("\nWould you like to create " + more_words + " process (\"True\"/\"False\")?: ", "true,false", lower = 'yeet')
                 
                 if ans == 'true':   
-                    ID, activity, priority, time, mode, service, io_freq = inputProcessInfo(self.processes)                  
+                    ID, activity, priority, time, mode, service, io_freq= inputProcessInfo(self.processes)                  
 
                     #create, append a process to queue
                     newP = Process(ID, activity, priority, time, mode, service, io_freq)
