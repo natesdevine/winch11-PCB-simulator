@@ -150,10 +150,10 @@ def round_robin(processes,io_duration, quantum, context_switch_penalty, total_me
     print("Average Turnaround Time: ",turnaround_time)
     
     throughput=throughput/(t-1)
-    print("Throughput: ",throughput)
+    print("Throughput: ",throughput,'\n\n')
 
-    for i in finished_processes:
-        print("process:", i.key, i.completion_time,i.location1, i.location2, i.when_allocated)
+    output(finished_processes)
+
 
 #First come first serve
 def first_come_first_serve(processes, io_duration, context_switch_penalty, total_memory):
@@ -288,8 +288,7 @@ def first_come_first_serve(processes, io_duration, context_switch_penalty, total
     throughput=throughput/(current_time-1)
     print("Throughput: ",throughput)
 
-    for i in finished_processes:
-        print("process:", i.key, i.completion_time, i.location1, i.location2, i.when_allocated)
+    output(finished_processes)
     
 def shortest_remaining_time(processes, io_duration, context_switch_penalty, total_memory):
     #processes is a list of all processes
@@ -431,8 +430,7 @@ def shortest_remaining_time(processes, io_duration, context_switch_penalty, tota
     throughput=throughput/(t-1)
     print("Throughput: ",throughput)
 
-    for i in finished_processes:
-        print("process:", i.key, i.completion_time, i.location1, i.location2, i.when_allocated)
+    output(finished_processes)
 
 def shortest_process_next(processes, io_duration, context_switch_penalty, total_memory):
    #processes is a list of all processes
@@ -569,9 +567,17 @@ def shortest_process_next(processes, io_duration, context_switch_penalty, total_
     print("Throughput: ",throughput)
 
 
-    for i in finished_processes:
-        print("process:", i.key, i.completion_time, i.location1, i.location2, i.when_allocated)
+    output(finished_processes)
+    
 
+def output(finished_processes):
+    print('\n\n')
+    for i in finished_processes:
+        print("process:", i.key, "completed:", i.completion_time)
+        for j in range(len(i.location1)):
+            print("\t Allocated at time:",i.when_allocated[j],"From address:",i.location1[j], "to:",i.location2[j])
+
+            
 def print_list(memory):
     list_crawler=memory.head
     print(list_crawler.process, list_crawler.start, list_crawler.end)
@@ -634,7 +640,13 @@ def compaction(memory,all_processes,t):
             list_crawler2.next=list_crawler.next
             list_crawler=list_crawler2
         
+    #graph(memory)
 
+def graph(memory):
+    
+    pass
+
+            
 def find_next(list_crawler):
     output=[False,'c','d']
     while list_crawler.next!=None:
