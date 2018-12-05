@@ -1,0 +1,11 @@
+Context Switch Penalty = 2
+Quantum = 3
+I/O Duration = 5
+0001,True,1,2,True,2,2450
+0002,True,1,5,True,3,2200
+0004,True,1,6,True,4,1500
+0007,True,1,9,True,4,420
+0008,True,1,13,True,4,420
+0010,True,1,18,True,4,420
+0018,True,1,19,True,2,400
+0299,True,1,20,True,2,3000
