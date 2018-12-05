@@ -9,10 +9,15 @@ def fileCheck(question):
 #assorted methods to validate user inputted parameters processes
 #lets add a check for negative priority
 def type_check(processes, parameters, show_errors = 'yeet'):   
-    if (len(parameters) != 8 or not bool_check(parameters[1], show_errors) or not bool_check(parameters[4], show_errors)
+    if (len(parameters) < 7 or len(parameters) > 8 or not bool_check(parameters[1], show_errors) or not bool_check(parameters[4], show_errors)
         or not id_check(processes, parameters[0], show_errors) or not int_check(parameters[2], show_errors)
-        or not int_check(parameters[3], show_errors) or not int_check(parameters[5], show_errors)):
+        or not int_check(parameters[3], show_errors) or not int_check(parameters[5], show_errors) or not int_check(parameters[6], show_errors)):
         return False
+    
+    if len(parameters) == 8 and not int_check(parameters[7], show_errors):
+        print("Here")
+        return False
+
     return True
 
 def pass_the_blunts():
@@ -78,9 +83,10 @@ def inputProcessInfo(processes):
     time = inputTime()
     mode = inputMode()
     service = inputService()
-    io_freq = input_io_freq()
+    io_freq = inputIOFreq()
+    memory = inputMemory()
 
-    return ID, activity, priority, time, mode, service, io_freq
+    return ID, activity, priority, time, mode, service, io_freq, memory
 
 def inputProcessID(processes):
     process = input("\nPlease enter a process ID: ")
@@ -134,8 +140,12 @@ def inputIOCounter():
         io_counter = input("Please enter the process' IO frequency: ")
     return io_counter
 
-
-
+def inputMemory():
+    memory = input("Please enter the process' memory: ")
+    while not int_check(memory):
+        memory = input("Please enter the process' memory: ")
+    return memory
+    
 def str_verify(question, correct_ans, lower = None, upper = None, multiple = None):
     accepted = correct_ans.split(',')
     

@@ -37,10 +37,9 @@ def control_script():
             queue_list_copy = PCB_obj.getProcesses()[:]
 
             #load any data the program reads in from text file
-            if PCB_obj.schedule_values_exist() == True:
-                context_switch_penalty, quantum, io_duration = PCB_obj.getScheduleValues()
+            context_switch_penalty, quantum, io_duration, total_memory = PCB_obj.getScheduleValues()
             
-            schedule = get_values(queue_list_copy, context_switch_penalty, quantum, io_duration)
+            schedule = get_values(queue_list_copy, context_switch_penalty, quantum, io_duration, total_memory)
             
             PCB_obj.empty()
             PCB_obj.readFile(forced_rerun = 'yeet')

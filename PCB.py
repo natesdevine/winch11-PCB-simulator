@@ -4,7 +4,7 @@ from PCB_utils import *
 class Process(object):
 
     #instance variables for process
-    def __init__(self, key, active, priority, arrival_time, mode, service_time, io_freq, memory_required):
+    def __init__(self, key, active, priority, arrival_time, mode, service_time, io_freq, memory_required=0):
         self.key = key
         self.active = active
         self.priority = priority
@@ -14,7 +14,7 @@ class Process(object):
         self.io_freq, self.io_counter = io_freq, io_freq
         self.io_quantum = 0
         #Each object now had a memory requirement
-        self.memory_required = int(memory_required)
+        self.memory_required = memory_required
         #keep track of completion times
         self.completion_time = 0
         self.location1=[]
@@ -47,6 +47,9 @@ class Process(object):
     def getIOCounter(self):
         return self.io_counter
 
+    def getMemory(self):
+        return self.memory_required
+
     def print_vals(self):
         print(self.key, self.active, self.priority, self.arrival_time, self.mode, self.service_time, self.io_freq, self.io_counter)       
 
@@ -69,7 +72,10 @@ class Process(object):
         self.io_freq = new_io_freq
 
     def setIOCounter(self, new_io_counter):
-        self.io_counter = new_io_counter 
+        self.io_counter = new_io_counter
+
+    def setMemory(self, x):
+        self.memory_required = x 
         
 class PCB(object):
 
@@ -104,16 +110,8 @@ class PCB(object):
             return True
         return False
 
-    def schedule_values_exist(self):
-        var1, var2, var3 = self.getScheduleValues()
-
-        if var1 is not None and var2 is not None and var3 is not None:
-            return True
-        else:
-            return False
-
     def getScheduleValues(self):
-        return (self.context_switch_penalty, self.quantum, self.io_duration)
+        return self.context_switch_penalty, self.quantum, self.io_duration, self.total_memory
 
     def getProcesses(self):
         return self.processes
@@ -127,7 +125,7 @@ class PCB(object):
         print("\n" + word + ' process queue: ')    
 
         for elem in list(self.PCBqueue.queue):
-            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.get_arrival_time() + ", Service Time: " + str(elem.getServiceTime()) + ", IO Freq: " + str(elem.getIOFreq()))
+            print("Process ID: " + elem.getKey() + ", Priority: " + elem.getPriority() + ", Arrival Time: " + elem.get_arrival_time() + ", Service Time: " + str(elem.getServiceTime()) + ", IO Freq: " + str(elem.getIOFreq()) + ", Memory: "+ str(elem.getMemory()))
 
     def printList(self, *args):
         word = "Current"
@@ -167,7 +165,7 @@ class PCB(object):
         print("isActive: ", someProcess.isActive())
         print("IO Frequency: ", someProcess.getIOFreq())
         print("IO Counter: ", someProcess.getIOCounter())
-        
+        print("Memory: ", someProcess.getMemory())
 
     #searches for a process by ID, returns false if it does not exist
     def searchProcesses(self, processID):
@@ -184,19 +182,22 @@ class PCB(object):
         self.PCBqueue.put(process)
 
     def catchParams(self, line):
-        params = ["ContextSwitchPenalty", "Quantum", "I/ODuration","Total Memory"]
+        params = ["ContextSwitchPenalty", "Quantum", "I/ODuration","TotalMemory"]
         
         value = line.split("=")
         
         if value[0] == params[0]:
             self.context_switch_penalty = value[1]
+        
         elif value[0] == params[1]:
             self.quantum = value[1]
+             
         elif value[0] == params[2]:
             self.io_duration = value[1]
+
         elif value[0] == params[3]:
             self.total_memory = value[1]
-        
+            
         else:
             pass
             # print('nuh uh, you aint getting a value')
@@ -209,7 +210,6 @@ class PCB(object):
         if forced_rerun is None:
             filename = fileCheck("Please enter the filename of the file you would like to read in: ")
         elif forced_rerun is not None:
-            # print("TEST")
             filename = self.getOGFileName()
             # print(filename)
 
@@ -224,18 +224,14 @@ class PCB(object):
                         #stip other stuff too, not just r
                         i = i.rstrip().replace(' ', '')
                         x = i.split(",")
+                        
                         if len(x) == 1:
                             x = "".join(x)
                             self.catchParams(x)
-                            # try:
-                            #     print("Contxt", self.context_switch_penalty, "quant", self.quantum, "ioduration", self.io_duration)                            
-                            # except AttributeError as e:
-                            #     print(e)
                             continue
 
                         #throw error if false
                         if type_check(self.processes, x, show_errors = 'nah') == False:
-                            # print("type check failed")
                             if forced_rerun is None:
                                 print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
                             continue
@@ -244,15 +240,14 @@ class PCB(object):
                         try:
                             newP = Process(x[0], x[1], x[2], x[3], x[4], x[5], x[6],int(x[7]))
                             processList.append(newP)
-                            # newP.print_vals()
                             if forced_rerun is None:
                                 print('Process ID ' + x[0] + ' has been validated')
 
                         except IndexError as e:
-                            print(e)
+                            newP = Process(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
+                            processList.append(newP)
                             if forced_rerun is None:
-                                print('Process ID ' + x[0] + " isn't valid. Moving on to the next process...")
-                            continue
+                                print('Process ID ' + x[0] + ' has been validated')
                             
                     loopFlag = False
                     processList.sort(key=lambda process: int(process.priority), reverse = True)
@@ -289,10 +284,10 @@ class PCB(object):
                 ans = str_verify("\nWould you like to create " + more_words + " process (\"True\"/\"False\")?: ", "true,false", lower = 'yeet')
                 
                 if ans == 'true':   
-                    ID, activity, priority, time, mode, service, io_freq= inputProcessInfo(self.processes)                  
+                    ID, activity, priority, time, mode, service, io_freq, memory = inputProcessInfo(self.processes)                  
 
                     #create, append a process to queue
-                    newP = Process(ID, activity, priority, time, mode, service, io_freq)
+                    newP = Process(ID, activity, priority, time, mode, service, io_freq, memory)
                     self.merge(newP)
                     repeated = True
 
@@ -316,6 +311,7 @@ class PCB(object):
         service = inputService()
         io_freq = inputIOFreq()
         io_counter = inputIOCounter()
+        memory = inputMemory()
 
         newList.append(priority)
         newList.append(time)
@@ -324,6 +320,7 @@ class PCB(object):
         newList.append(service)
         newList.append(io_freq)
         newList.append(io_counter)
+        newList.append(memory)
 
         return newList
 
@@ -349,13 +346,13 @@ class PCB(object):
             newProcessValues = self.updateProcessInfo()
 
             self.processes[existingProcessIndex].setPriority(newProcessValues[0])
-            self.processes[existingProcessIndex].get_arrival_time(newProcessValues[1])
+            self.processes[existingProcessIndex].set_arrival_time(newProcessValues[1])
             self.processes[existingProcessIndex].setMode(newProcessValues[2])
             self.processes[existingProcessIndex].setActive(newProcessValues[3])
             self.processes[existingProcessIndex].setServiceTime(newProcessValues[4])
             self.processes[existingProcessIndex].setIOFreq(newProcessValues[5])
             self.processes[existingProcessIndex].setIOCounter(newProcessValues[6])
-
+            self.processes[existingProcessIndex].setMemory(newProcessValues[7])
 
             self.print_process_info(existingProcess, 'uh huh okay, let me milly rock on these lamez')
         

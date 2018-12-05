@@ -797,12 +797,9 @@ def unpack(required_vars):
 
 def should_update_value(required_vars):
     names = [variable for variable in required_vars]
-    endings = ['io', 'quant', 'context switch']
-    
-    names_linked_endings = list(zip(names, endings))
 
-    for i,var in enumerate(names_linked_endings):
-        print("\t"+var[0]+":", required_vars.get(var[0]))
+    for i,var in enumerate(names):
+        print("\t"+var+":", required_vars.get(var))
     
     print("\nTo edit any variables, enter in the variable names seperated by commas")
     print('OR')
