@@ -1,3 +1,5 @@
+#contains 3 scheduling algorithms as well as their helper functions
+
 from PCB_utils import *
 from control import *
 from PCB import *
@@ -7,9 +9,6 @@ import sys
 def round_robin(processes,io_duration, quantum, context_switch_penalty, total_memory):
     num_processes=len(processes)
     
-    #not passing in correct quantum, context_switch_pentaly and io_duration on
-    #automatic reading of files
-    
     #processes is a list of all processes
     processes.sort(key=sort_time_available)
     #create empty queue
@@ -17,7 +16,7 @@ def round_robin(processes,io_duration, quantum, context_switch_penalty, total_me
  
     #time variable, process in processes
     t,i=0,0
-    #q=quantum
+    
     current_process=None
     not_beginning=False
 
@@ -529,7 +528,7 @@ def shortest_process_next(processes, io_duration, context_switch_penalty, total_
             #one time unit was used on either the io event or the current process
 
                 
-            #if process ends, remove it, and reset all relevant variables, adn add
+            #if process ends, remove it, and reset all relevant variables, and add
             #contact switch penalty
             ####################PROCESS ENDS################################
             if current_process.service_time==0:
@@ -623,10 +622,6 @@ def compaction(memory,all_processes,t):
                             i.location1.append(list_crawler.start)
                             i.location2.append(list_crawler.end-1)
                     list_crawler=list_crawler.next
-
-                #print_list(memory)
-                #print('despacito')
-            
            
         prev=list_crawler
         list_crawler=list_crawler.next
@@ -635,15 +630,12 @@ def compaction(memory,all_processes,t):
         list_crawler2=list_crawler
         list_crawler=list_crawler.next
         if list_crawler.process==None and list_crawler2.process==None:
-            #print("WE REMOVING",list_crawler.process, list_crawler.start, list_crawler.end)
             list_crawler2.end=list_crawler.end
             list_crawler2.next=list_crawler.next
             list_crawler=list_crawler2
         
-    #graph(memory)
 
 def graph(memory):
-    
     pass
 
             
@@ -735,10 +727,7 @@ def enough_memory_queue(io_finished_queue, memory,t,all_processes):
             io_finished_queue.put(i)
     #print(results)
     return results
-
-
         
-
 def get_values(processes, context_switch_penalty = None, quantum = None, io_duration = None, total_memory = None):
     rr_required_vars = {'io_duration':io_duration, 'quantum': quantum, 'context_switch_penalty':context_switch_penalty, 'total_memory':total_memory}
     other_required_vars = {'io_duration':io_duration, 'context_switch_penalty':context_switch_penalty, 'total_memory':total_memory}
@@ -815,8 +804,7 @@ def should_update_value(required_vars):
         for var in update_vars:
             if var == '':
                 continue
-
-            # LINK ENDINGS TO NAMES
+                
             required_vars = update_value(required_vars,var)
         
         print("\nThe following variables below are:")        

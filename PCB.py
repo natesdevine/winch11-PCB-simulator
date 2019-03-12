@@ -200,7 +200,6 @@ class PCB(object):
             
         else:
             pass
-            # print('nuh uh, you aint getting a value')
 
     #method to read in a list of processes from a .txt file (of CSV)
     def readFile(self, forced_rerun = None):
@@ -211,7 +210,6 @@ class PCB(object):
             filename = fileCheck("Please enter the filename of the file you would like to read in: ")
         elif forced_rerun is not None:
             filename = self.getOGFileName()
-            # print(filename)
 
         while loopFlag:
             try:
@@ -221,7 +219,6 @@ class PCB(object):
 
                 with open(filename) as infile:
                     for i in infile:
-                        #stip other stuff too, not just r
                         i = i.rstrip().replace(' ', '')
                         x = i.split(",")
                         
@@ -260,6 +257,7 @@ class PCB(object):
                         self.print_active_processes()
 
                     self.og_file_name = filename
+                    
             #exception handling for nonexistent file names
             except (FileNotFoundError):
                 print("File not found. Try again")
@@ -274,7 +272,6 @@ class PCB(object):
 
         while loopFlag:
             try:
-                #print from queue IDs instead of process list
                 if repeated == True:
                     self.printQueue("Updated")
                     more_words = "another"
