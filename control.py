@@ -6,12 +6,9 @@ import sys
 #Gets the desired menu from the user and checks if it is a valid choice
 def menu():
     print("\nType:\n\t\"add\" to add a new process\n\t\"update\" to update a process\n\t\"print\" to see active processes\n\t\"schedule\" to schedule the processes\n\t\"read\" to read a new data file\n\t\"finish\" to exit the program.")
-    action = str_verify("\nI want to: ", "update,add,print,read,schedule,finish", lower = "yeet, juju on the beat")
+    action = str_verify("\nI want to: ", "update,add,print,read,schedule,finish", lower = ".")
 
     return action
-
-def main():
-    control_script()
 
 def control_script():
     PCB_obj = PCB()
@@ -50,7 +47,7 @@ def control_script():
 
             else:
                 print("\nThe queue currently isn't empty. You can either add to or clear the current queue.")
-                ans = str_verify("\nWould you like to add or clear the current queue (add/clear)?: ", "add,clear", lower = "uh huh")
+                ans = str_verify("\nWould you like to add or clear the current queue (add/clear)?: ", "add,clear", lower = ".")
                 
                 if ans == 'clear':
                     PCB_obj.empty()
@@ -62,8 +59,10 @@ def control_script():
                     PCB_obj.readFile()
 
         elif action == 'finish':
-            print("Smell ya later")
+            print("exiting")
             sys.exit()
+def main():
+    control_script()
 
 if __name__ == '__main__':
     main()

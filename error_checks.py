@@ -24,7 +24,7 @@ def first_case(question, test_case, bound):
             
             #a min check must be run
             if test_case == 'min':
-                #answer must be greater than lower bound    
+                #answer must be greater than the lower bound    
                 if ans >= bound:
                     return ans
                 else:
